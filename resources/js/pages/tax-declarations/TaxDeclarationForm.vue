@@ -14,16 +14,23 @@
                             {{ isEdit ? 'Edit Tax Declaration' : 'New Tax Declaration' }}
                         </h1>
                         <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">
-                            {{ isEdit ? `TD# ${td?.td_number}` : 'Tax Declaration of Real Property' }}
+                            {{ isEdit ? `TD# ${td?.td_number}` : (chosenForm === 'default' ? 'Tax Declaration of Real Property' : activeLayoutName) }}
                         </p>
                     </div>
+                </div>
+                <div v-if="!isEdit" class="form-pick">
+                    <span>Form</span>
+                    <select :value="chosenForm" @change="pickForm($event.target.value)">
+                        <option value="default">Default</option>
+                        <option v-for="item in formLayouts" :key="item.id" :value="String(item.id)">{{ item.name }}</option>
+                    </select>
                 </div>
                 <div class="flex items-center gap-2 sm:shrink-0 pl-11 sm:pl-0">
                     <button type="submit" :disabled="saving"
                         class="h-9 px-4 rounded-md bg-[#1a3557] hover:bg-[#1e4880] text-white text-sm font-medium disabled:opacity-50 inline-flex items-center justify-center gap-1.5 transition-colors shadow-sm">
                         <span v-if="saving" class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                         <i v-else class="pi pi-save text-sm"></i>
-                        {{ isEdit ? 'Update Record' : 'Save Declaration' }}
+                        {{ isEdit ? 'Update Record' : (chosenForm === 'default' ? 'Save Declaration' : 'Save Form') }}
                     </button>
                     <RouterLink to="/tax-declarations">
                         <button type="button" class="h-9 px-4 rounded-md border border-[#1a3557] text-[#1a3557] dark:border-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
@@ -35,7 +42,14 @@
 
             <div :class="isEdit ? '' : 'grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px] gap-4'">
                 <!-- ─── Main Form (aligned to official TD sheet) ─── -->
-                <div class="min-w-0 space-y-5">
+                <div v-if="chosenForm !== 'default'" class="custom-layout min-w-0">
+                    <p v-if="layoutLoading" class="text-sm text-zinc-500">Opening {{ activeLayoutName }}…</p>
+                    <template v-else>
+                        <p class="text-xs text-zinc-500 mb-2">Type in the boxes, or scan with OCR on the right. Boxes named like the declaration, such as TD No. or Owner, are filled from the scan.</p>
+                        <FormLayoutSheet :key="chosenForm" v-model="layoutAnswers" :fields="layoutFields" :page="layoutPage" :highlights="layoutHighlights" />
+                    </template>
+                </div>
+                <div v-else class="min-w-0 space-y-5">
 
                     <div class="rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-3 sm:p-4 shadow-sm space-y-4 overflow-x-hidden">
                         <h2 class="text-center text-sm font-bold uppercase tracking-wide text-[#1a3557] dark:text-zinc-50">
@@ -49,13 +63,13 @@
                                     <td class="border border-slate-300 dark:border-slate-600 w-1/2 p-0">
                                         <div class="flex items-center">
                                             <span class="px-2 py-1.5 font-medium whitespace-nowrap bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600">TD No. <span class="text-red-500">*</span></span>
-                                            <InputText v-model="form.td_number" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('td_number')}" required />
+                                            <InputText :modelValue="form.td_number" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('td_number')}" required @update:modelValue="form.td_number = digitsOnly($event)" />
                                         </div>
                                     </td>
                                     <td class="border border-slate-300 dark:border-slate-600 w-1/2 p-0">
                                         <div class="flex items-center">
                                             <span class="px-2 py-1.5 font-medium whitespace-nowrap bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600">Property Identification No.</span>
-                                            <InputText v-model="form.property_index_number" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('property_index_number')}" />
+                                            <InputText :modelValue="form.property_index_number" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('property_index_number')}" @update:modelValue="form.property_index_number = digitsOnly($event)" />
                                         </div>
                                     </td>
                                 </tr>
@@ -98,7 +112,7 @@
                                     <td class="border border-slate-300 dark:border-slate-600 p-0">
                                         <div class="flex items-center">
                                             <span class="px-2 py-1.5 font-medium whitespace-nowrap bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600">Telephone No.</span>
-                                            <InputText v-model="form.owner_telephone" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('owner_telephone')}" />
+                                            <InputText :modelValue="form.owner_telephone" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('owner_telephone')}" @update:modelValue="form.owner_telephone = digitsOnly($event)" />
                                         </div>
                                     </td>
                                 </tr>
@@ -132,7 +146,7 @@
                                     <td class="border border-slate-300 dark:border-slate-600 p-0">
                                         <div class="flex items-center">
                                             <span class="px-2 py-1.5 font-medium whitespace-nowrap bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600">Telephone No.</span>
-                                            <InputText v-model="form.administrator_telephone" class="!w-full !border-0 !rounded-none !shadow-none" />
+                                            <InputText :modelValue="form.administrator_telephone" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" @update:modelValue="form.administrator_telephone = digitsOnly($event)" />
                                         </div>
                                     </td>
                                 </tr>
@@ -166,7 +180,7 @@
                                 <tbody>
                                     <tr class="border border-slate-300 dark:border-slate-600">
                                         <td class="px-2 py-1 bg-slate-50 dark:bg-slate-800 font-medium border-r border-slate-300 dark:border-slate-600 whitespace-nowrap w-36">OCT/TCT/CLOA No.</td>
-                                        <td class="p-0"><InputText v-model="form.oct_tct_cloa_no" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('oct_tct_cloa_no')}" /></td>
+                                        <td class="p-0"><InputText :modelValue="form.oct_tct_cloa_no" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('oct_tct_cloa_no')}" @update:modelValue="form.oct_tct_cloa_no = digitsOnly($event)" /></td>
                                     </tr>
                                     <tr class="border border-slate-300 dark:border-slate-600">
                                         <td class="px-2 py-1 bg-slate-50 dark:bg-slate-800 font-medium border-r border-slate-300 dark:border-slate-600">CCT</td>
@@ -182,15 +196,15 @@
                                 <tbody>
                                     <tr class="border border-slate-300 dark:border-slate-600">
                                         <td class="px-2 py-1 bg-slate-50 dark:bg-slate-800 font-medium border-r border-slate-300 dark:border-slate-600 whitespace-nowrap w-28">Survey No.</td>
-                                        <td class="p-0"><InputText v-model="form.survey_number" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('survey_number')}" /></td>
+                                        <td class="p-0"><InputText :modelValue="form.survey_number" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('survey_number')}" @update:modelValue="form.survey_number = digitsOnly($event)" /></td>
                                     </tr>
                                     <tr class="border border-slate-300 dark:border-slate-600">
                                         <td class="px-2 py-1 bg-slate-50 dark:bg-slate-800 font-medium border-r border-slate-300 dark:border-slate-600">Lot No.</td>
-                                        <td class="p-0"><InputText v-model="form.lot_number" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('lot_number')}" /></td>
+                                        <td class="p-0"><InputText :modelValue="form.lot_number" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('lot_number')}" @update:modelValue="form.lot_number = digitsOnly($event)" /></td>
                                     </tr>
                                     <tr class="border border-slate-300 dark:border-slate-600">
                                         <td class="px-2 py-1 bg-slate-50 dark:bg-slate-800 font-medium border-r border-slate-300 dark:border-slate-600">Block No.</td>
-                                        <td class="p-0"><InputText v-model="form.block_number" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('block_number')}" /></td>
+                                        <td class="p-0"><InputText :modelValue="form.block_number" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('block_number')}" @update:modelValue="form.block_number = digitsOnly($event)" /></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -460,7 +474,7 @@
                                     <td class="border border-slate-300 dark:border-slate-600 p-0" style="width:34%">
                                         <div class="flex items-center">
                                             <span class="px-2 py-1.5 text-xs font-medium whitespace-nowrap bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600">Cancels TD No.</span>
-                                            <InputText v-model="form.previous_td_number" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('previous_td_number')}" />
+                                            <InputText :modelValue="form.previous_td_number" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" :class="{'!bg-green-50': ocr.highlights.includes('previous_td_number')}" @update:modelValue="form.previous_td_number = digitsOnly($event)" />
                                         </div>
                                     </td>
                                     <td class="border border-slate-300 dark:border-slate-600 p-0" style="width:33%">
@@ -517,7 +531,7 @@
 
                         <Transition name="slide-down">
                             <div v-if="useTool" class="mt-3 space-y-3">
-                                <p class="text-xs text-zinc-500">Upload one or more scanned TD pages. OCR merges extracted fields automatically.</p>
+                                <p class="text-xs text-zinc-500">{{ chosenForm === 'default' ? 'Upload one or more scanned TD pages. OCR merges extracted fields automatically.' : 'Upload a scanned tax declaration. OCR fills the boxes on this form that share those labels.' }}</p>
 
                                 <!-- File upload -->
                                 <div class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-lg p-3 text-center cursor-pointer hover:border-violet-400 transition-colors"
@@ -552,9 +566,9 @@
                                     Scan {{ ocr.files.length }} Document{{ ocr.files.length > 1 ? 's' : '' }}
                                 </button>
 
-                                <div v-if="ocr.scanning" class="flex items-center gap-2 text-xs text-violet-600">
-                                    <span class="w-3.5 h-3.5 border-2 border-violet-600 border-t-transparent rounded-full animate-spin"></span>
-                                    {{ ocr.scanProgress || 'Processing OCR…' }}
+                                <div v-if="ocr.scanning" class="flex items-center gap-2 min-w-0 text-xs text-violet-600">
+                                    <span class="inline-block shrink-0 w-3.5 h-3.5 border-2 border-violet-600 border-t-transparent rounded-full animate-spin"></span>
+                                    <span class="truncate">{{ ocr.scanProgress || 'Processing OCR…' }}</span>
                                 </div>
 
                                 <!-- OCR Results -->
@@ -650,10 +664,10 @@
                     <div class="flex-1 overflow-auto p-4 space-y-3">
                         <div v-for="(value, key) in reviewFields" :key="key" class="flex items-start gap-3">
                             <div class="w-40 shrink-0 pt-1.5">
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">{{ formatReviewLabel(key) }}</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider" :class="fieldIssues[key] ? 'text-red-600' : 'text-slate-400'">{{ formatReviewLabel(key) }}</span>
                             </div>
-                            <div class="flex-1">
-                                <InputText v-if="!isArrayField(key)" v-model="reviewFields[key]" class="w-full text-sm" size="small" />
+                            <div class="flex-1 min-w-0">
+                                <InputText v-if="!isArrayField(key)" v-model="reviewFields[key]" class="w-full text-sm" :class="{ 'ocr-suspect': fieldIssues[key] }" size="small" />
                                 <div v-else class="flex items-center gap-3 flex-wrap">
                                     <label v-for="opt in propertyKinds" :key="opt" class="flex items-center gap-1.5 text-xs">
                                         <input type="checkbox" :value="opt" v-model="reviewFields[key]"
@@ -661,6 +675,9 @@
                                         {{ opt }}
                                     </label>
                                 </div>
+                                <p v-if="fieldIssues[key]" class="mt-1 text-[10px] leading-snug text-red-600">
+                                    <i class="pi pi-exclamation-circle mr-1"></i>{{ fieldIssues[key] }}
+                                </p>
                             </div>
                             <button type="button" @click="delete reviewFields[key]" class="shrink-0 w-6 h-6 mt-1 flex items-center justify-center rounded text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors" title="Remove field">
                                 <i class="pi pi-times text-[10px]"></i>
@@ -681,6 +698,7 @@
                         </button>
                         <div class="flex-1"></div>
                         <span class="text-[10px] text-slate-400 mr-2">{{ Object.keys(reviewFields).length }} fields</span>
+                        <span v-if="suspectCount" class="text-[10px] font-semibold text-red-600 mr-2">{{ suspectCount }} to check</span>
                         <button type="button" @click="applyReviewedFields"
                             class="h-8 px-5 rounded-md bg-green-600 hover:bg-green-700 text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm">
                             <i class="pi pi-check text-[10px]"></i> Apply to Form
@@ -715,18 +733,18 @@
                     </div>
 
                     <div class="flex-1 overflow-auto p-4 space-y-3">
-                        <div v-if="ocr.scanning" class="flex flex-col items-center justify-center h-full text-violet-500">
-                            <span class="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mb-2"></span>
-                            <p class="text-xs">{{ ocr.scanProgress || 'Scanning document…' }}</p>
+                        <div v-if="ocr.scanning" class="flex flex-col items-center justify-center h-full text-violet-500 text-center px-4">
+                            <span class="inline-block shrink-0 w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mb-2"></span>
+                            <p class="text-xs max-w-full truncate">{{ ocr.scanProgress || 'Scanning document…' }}</p>
                         </div>
 
                         <template v-else-if="Object.keys(reviewFields).length">
                             <div v-for="(value, key) in reviewFields" :key="key" class="flex items-start gap-3">
                                 <div class="w-32 shrink-0 pt-1.5">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">{{ formatReviewLabel(key) }}</span>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider" :class="fieldIssues[key] ? 'text-red-600' : 'text-slate-400'">{{ formatReviewLabel(key) }}</span>
                                 </div>
-                                <div class="flex-1">
-                                    <InputText v-if="!isArrayField(key)" v-model="reviewFields[key]" class="w-full text-sm" size="small" />
+                                <div class="flex-1 min-w-0">
+                                    <InputText v-if="!isArrayField(key)" v-model="reviewFields[key]" class="w-full text-sm" :class="{ 'ocr-suspect': fieldIssues[key] }" size="small" />
                                     <div v-else class="flex items-center gap-3 flex-wrap">
                                         <label v-for="opt in propertyKinds" :key="opt" class="flex items-center gap-1.5 text-xs">
                                             <input type="checkbox" :value="opt" v-model="reviewFields[key]"
@@ -734,6 +752,9 @@
                                             {{ opt }}
                                         </label>
                                     </div>
+                                    <p v-if="fieldIssues[key]" class="mt-1 text-[10px] leading-snug text-red-600">
+                                        <i class="pi pi-exclamation-circle mr-1"></i>{{ fieldIssues[key] }}
+                                    </p>
                                 </div>
                                 <button type="button" @click="delete reviewFields[key]" class="shrink-0 w-6 h-6 mt-1 flex items-center justify-center rounded text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors" title="Remove field">
                                     <i class="pi pi-times text-[10px]"></i>
@@ -821,7 +842,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useRoute, useRouter, RouterLink } from 'vue-router';
 import { useToast } from '@/composables/useToast';
 import InputText from 'primevue/inputtext';
@@ -832,12 +853,23 @@ import DatePicker from 'primevue/datepicker';
 import AutoComplete from 'primevue/autocomplete';
 import Dialog from 'primevue/dialog';
 import axios from 'axios';
+import { findOcrTextIssues } from '@/utils/ocrSpellcheck';
+import { digitsOnly, numberOnlyLabel } from '@/utils/digitsOnly';
+import FormLayoutSheet from '@/components/FormLayoutSheet.vue';
 
 const route  = useRoute();
 const router = useRouter();
 const toast  = useToast();
 
 const isEdit = computed(() => !!route.params.id);
+const chosenForm = ref('default');
+const formLayouts = ref([]);
+const layoutFields = ref([]);
+const layoutAnswers = ref({});
+const layoutHighlights = ref([]);
+const layoutPage = ref(null);
+const layoutLoading = ref(false);
+const activeLayoutName = computed(() => formLayouts.value.find((item) => String(item.id) === String(chosenForm.value))?.name || 'Saved form');
 const td     = ref(null);
 const saving = ref(false);
 const errors = ref({});
@@ -1036,6 +1068,14 @@ const form = reactive({
     memoranda: '',
     remarks: '',
 });
+
+for (const key of ['td_number', 'property_index_number', 'owner_telephone', 'administrator_telephone', 'oct_tct_cloa_no', 'survey_number', 'lot_number', 'block_number', 'previous_td_number']) {
+    watch(() => form[key], (value) => {
+        if (value == null || value === '') return;
+        const next = digitsOnly(value);
+        if (String(value) !== next) form[key] = next;
+    });
+}
 
 const ownerForm = reactive({
     owner_name: '', co_owner_name: '', tin: '', sex: null,
@@ -1260,13 +1300,19 @@ async function runOcr() {
     try {
         const merged = {};
         const scores = [];
+        let pagesSkipped = 0;
         for (let i = 0; i < ocr.files.length; i++) {
             const file = ocr.files[i];
-            ocr.scanProgress = `Scanning ${i + 1} of ${ocr.files.length}: ${file.name}`;
+            ocr.scanProgress = `Scanning ${i + 1} of ${ocr.files.length}…`;
             const fd = new FormData();
             fd.append('file', file);
             const { data: uploadRes } = await axios.post('ocr/upload', fd);
-            const { data: scanRes } = await axios.post(`ocr/${uploadRes.id}/scan`);
+            const { data: scanRes } = await axios.post(`ocr/${uploadRes.id}/scan`, {
+                expected_document: 'tax_declaration',
+            });
+            const used = Number(scanRes.pages_used ?? 1);
+            pagesSkipped += Number(scanRes.pages_skipped ?? 0);
+            if (used <= 0) continue;
             mergeOcrFields(merged, scanRes.extracted_fields || {});
             if (scanRes.confidence_score != null) scores.push(Number(scanRes.confidence_score));
         }
@@ -1278,10 +1324,18 @@ async function runOcr() {
         Object.keys(reviewFields).forEach((k) => delete reviewFields[k]);
         Object.assign(reviewFields, JSON.parse(JSON.stringify(ocr.result)));
 
+        const skipNote = pagesSkipped > 0
+            ? ` Skipped ${pagesSkipped} Field Appraisal page${pagesSkipped === 1 ? '' : 's'}.`
+            : '';
         if (Object.keys(merged).length === 0) {
-            toast.warn('No Fields Detected', 'This does not look like a Tax Declaration document. Make sure the actual TD form is in frame, well-lit, and try again.');
+            toast.warn(
+                pagesSkipped > 0 ? 'Field Appraisal skipped' : 'No Fields Detected',
+                pagesSkipped > 0
+                    ? 'This form only reads Tax Declaration pages. The upload did not include a Tax Declaration page.'
+                    : 'This does not look like a Tax Declaration document. Make sure the actual TD form is in frame, well-lit, and try again.',
+            );
         } else {
-            toast.success('OCR Complete', `${ocr.filesScanned} file(s) · Confidence: ${ocr.confidence}%`);
+            toast.success('OCR Complete', `${ocr.filesScanned} file(s) · Confidence: ${ocr.confidence}%.${skipNote}`);
         }
     } catch (err) {
         toast.error('OCR Failed', err.response?.data?.message || 'Scan error.');
@@ -1315,6 +1369,25 @@ const reviewLabelMap = {
 function formatReviewLabel(key) {
     return reviewLabelMap[key] || key.replace(/_/g, ' ');
 }
+
+const fieldIssues = computed(() => {
+    const extra = [
+        ...municipalities.value.map((item) => item.name),
+        ...municipalities.value.map((item) => item.province),
+        ...barangays.value.map((item) => item.name),
+        ...classifications.value.map((item) => item.name),
+        ...classificationKinds,
+        ...propertyKinds,
+    ];
+    const issues = {};
+    for (const key of Object.keys(reviewFields)) {
+        const note = findOcrTextIssues(reviewFields[key], key, extra);
+        if (note) issues[key] = note;
+    }
+    return issues;
+});
+
+const suspectCount = computed(() => Object.keys(fieldIssues.value).length);
 
 function isArrayField(key) {
     return key === 'kind_of_property' && Array.isArray(reviewFields[key]);
@@ -1511,8 +1584,162 @@ async function applyLocationDropdowns(r, highlights) {
     }
 }
 
+const layoutOcrLabels = [
+    ['TD No.', ['td_number', 'td_no', 'arp_no', 'arp_number']],
+    ['Property Identification No.', ['property_identification_no', 'property_index_number', 'pin']],
+    ['Owner', ['owner_name']],
+    ['TIN', ['tin', 'owner_tin']],
+    ['Telephone No.', ['telephone', 'owner_telephone', 'tel']],
+    ['Address', ['address', 'owner_address']],
+    ['Administrator', ['administrator', 'administrator_name']],
+    ['Location', ['location_street', 'property_street', 'street']],
+    ['Barangay', ['barangay']],
+    ['Municipality', ['municipality']],
+    ['Province', ['province']],
+    ['OCT/TCT/CLOA No.', ['oct_tct_cloa', 'oct_tct_cloa_no', 'tct', 'oct_tct_kot_no']],
+    ['Survey No.', ['survey_no', 'survey_number']],
+    ['Lot No.', ['lot_no', 'lot_number', 'cad_pls_lot_no']],
+    ['Block No.', ['block_no', 'block_number']],
+    ['CCT', ['cct']],
+    ['Dated', ['title_date', 'dated']],
+    ['North', ['boundary_north', 'north']],
+    ['South', ['boundary_south', 'south']],
+    ['East', ['boundary_east', 'east']],
+    ['West', ['boundary_west', 'west']],
+    ['Kind of Property', ['kind_of_property']],
+    ['Classification', ['classification', 'classification_kind']],
+    ['Actual Use', ['actual_use']],
+    ['Area', ['area', 'land_area']],
+    ['Market Value', ['market_value', 'base_market_value']],
+    ['Assessed Value', ['assessed_value']],
+    ['Assessment Level', ['assessment_level']],
+    ['Taxability', ['taxability']],
+    ['Effectivity Quarter', ['effectivity_quarter']],
+    ['Effectivity Year', ['effectivity_year']],
+    ['Approved By', ['approved_by', 'approved_by_name']],
+    ['Approval Date', ['approval_date', 'date_issued']],
+    ['Previous TD', ['previous_td', 'previous_td_number']],
+    ['Previous Owner', ['previous_owner']],
+    ['Previous A.V.', ['previous_av']],
+    ['Memoranda', ['memoranda']],
+    ['Remarks', ['remarks']],
+];
+
+function normLayoutLabel(value) {
+    return String(value || '')
+        .toLowerCase()
+        .replace(/&/g, ' and ')
+        .replace(/[^\w\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function matchLayoutLabel(label) {
+    const text = normLayoutLabel(label);
+    if (!text || ['text field', 'long text', 'number', 'date', 'dropdown', 'yes no', 'table', 'header', 'subheader'].includes(text)) {
+        return null;
+    }
+    let best = null;
+    let bestScore = 0;
+    for (const [name, keys] of layoutOcrLabels) {
+        const alias = normLayoutLabel(name);
+        let score = 0;
+        if (text === alias) score = 100 + alias.length;
+        else if (Math.min(text.length, alias.length) >= 4 && (text.includes(alias) || alias.includes(text))) score = 50 + Math.min(text.length, alias.length);
+        if (score > bestScore) {
+            best = keys;
+            bestScore = score;
+        }
+    }
+    return best;
+}
+
+function layoutValueFor(type, options, raw, keys) {
+    if (raw == null || raw === '') return null;
+    if (Array.isArray(raw)) raw = raw.filter(Boolean).join(', ');
+    if (type === 'number') {
+        const num = parseOcrNumber(raw);
+        return num == null ? null : String(num);
+    }
+    if (type === 'date') {
+        const date = parseMaybeDate(raw);
+        return date ? date.toISOString().slice(0, 10) : String(raw).trim();
+    }
+    if (type === 'checkbox') return /^(1|true|yes|y|checked)$/i.test(String(raw).trim());
+    let text = String(raw).replace(/\s+/g, ' ').trim();
+    if ((keys || []).some((key) => /owner|administrator/.test(key))) {
+        text = text.replace(/\s*(?:Taxab[a-z]{0,10}|Taxable|Exempt)\b.*$/i, '').trim();
+    }
+    if (type === 'select') {
+        const hit = (options || []).find((option) => String(option).toLowerCase() === text.toLowerCase());
+        return hit || text;
+    }
+    return text || null;
+}
+
+function firstLayoutOcrValue(result, keys) {
+    for (const key of keys) {
+        const value = result[key];
+        if (value == null || value === '' || (Array.isArray(value) && !value.length)) continue;
+        return value;
+    }
+    return null;
+}
+
+function collectLayoutSlots(fields) {
+    const slots = [];
+    for (const element of fields || []) {
+        if (['text', 'textarea', 'number', 'date', 'checkbox', 'select'].includes(element.type)) {
+            const keys = matchLayoutLabel(element.text);
+            if (keys) slots.push({ id: element.id, type: element.type, options: element.options, keys, label: element.text });
+            continue;
+        }
+        if (element.type !== 'table') continue;
+        const used = new Set();
+        for (const row of element.cells || []) {
+            for (let index = 0; index < row.length; index += 1) {
+                const cell = row[index];
+                if (!cell || used.has(cell.id)) continue;
+                const keys = matchLayoutLabel(cell.text);
+                if (!keys) continue;
+                const next = row[index + 1];
+                const target = next && !matchLayoutLabel(next.text) ? next : cell;
+                if (used.has(target.id)) continue;
+                used.add(cell.id);
+                used.add(target.id);
+                slots.push({ id: target.id, type: 'text', options: [], keys, label: cell.text });
+            }
+        }
+    }
+    return slots;
+}
+
+function applyOcrToLayout() {
+    const result = normalizeOcrResult(ocr.result);
+    const answers = { ...layoutAnswers.value };
+    const filled = [];
+    for (const slot of collectLayoutSlots(layoutFields.value)) {
+        let value = layoutValueFor(slot.type, slot.options, firstLayoutOcrValue(result, slot.keys), slot.keys);
+        if (typeof value === 'string' && numberOnlyLabel(slot.label)) value = digitsOnly(value);
+        if (value == null || value === '') continue;
+        answers[slot.id] = value;
+        filled.push(slot.id);
+    }
+    layoutAnswers.value = answers;
+    layoutHighlights.value = filled;
+    if (!filled.length) {
+        toast.warn('Nothing matched', 'Name the boxes like the declaration fields, such as TD No., Owner, or Address, then apply the scan again. You can still type the answers in.');
+        return;
+    }
+    toast.success('Applied', `${filled.length} field${filled.length === 1 ? '' : 's'} filled on ${activeLayoutName.value}.`);
+}
+
 async function applyOcrFields() {
     if (!ocr.result) return;
+    if (chosenForm.value !== 'default') {
+        applyOcrToLayout();
+        return;
+    }
     const r = normalizeOcrResult(ocr.result);
     const highlights = [];
 
@@ -2045,6 +2272,10 @@ function validateForm() {
 }
 
 async function handleSubmit() {
+    if (chosenForm.value !== 'default') {
+        await saveChosenForm();
+        return;
+    }
     if (!validateForm()) return;
 
     saving.value = true;
@@ -2088,7 +2319,69 @@ async function handleSubmit() {
     } finally { saving.value = false; }
 }
 
+function layoutMissing() {
+    return layoutFields.value.filter((element) => {
+        if (!element.required || !['text', 'textarea', 'number', 'date', 'checkbox', 'select'].includes(element.type)) return false;
+        const value = layoutAnswers.value[element.id];
+        if (element.type === 'checkbox') return !value;
+        return value == null || String(value).trim() === '';
+    });
+}
+
+async function saveChosenForm() {
+    const missing = layoutMissing();
+    if (missing.length) {
+        toast.error('Fill the required fields', missing.map((element) => element.text).join(', '));
+        return;
+    }
+    saving.value = true;
+    const loadingId = toast.loading('Saving form…', 'Please wait');
+    try {
+        await axios.post(`form-layouts/${chosenForm.value}/entries`, { values: layoutAnswers.value });
+        toast.dismiss(loadingId);
+        toast.success('Saved', 'The form answers were stored.');
+        layoutAnswers.value = {};
+        layoutHighlights.value = [];
+    } catch (err) {
+        toast.dismiss(loadingId);
+        toast.apiError(err, 'Could not save the form');
+    } finally {
+        saving.value = false;
+    }
+}
+
+async function pickForm(id) {
+    const next = String(id || 'default');
+    chosenForm.value = next;
+    if (next === 'default') {
+        layoutFields.value = [];
+        layoutAnswers.value = {};
+        layoutHighlights.value = [];
+        layoutPage.value = null;
+        layoutLoading.value = false;
+        return;
+    }
+    layoutLoading.value = true;
+    layoutFields.value = [];
+    layoutHighlights.value = [];
+    try {
+        const { data } = await axios.get(`form-layouts/${next}`);
+        layoutFields.value = Array.isArray(data.fields) ? data.fields : [];
+        layoutPage.value = data.page || null;
+        layoutAnswers.value = {};
+    } catch (err) {
+        chosenForm.value = 'default';
+        toast.apiError(err, 'Could not open that form');
+    } finally {
+        layoutLoading.value = false;
+    }
+}
+
 onMounted(async () => {
+    if (!isEdit.value) {
+        const { data } = await axios.get('form-layouts', { params: { target: 'tax_declaration' } });
+        formLayouts.value = data;
+    }
     const [brRes, clsRes, munRes] = await Promise.all([
         axios.get('settings/barangays'),
         axios.get('settings/classifications'),
@@ -2119,6 +2412,9 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.form-pick { display: flex; align-items: center; gap: 8px; margin-right: auto; font-size: 13px; font-weight: 600; color: #1a3557; }
+.form-pick select { height: 36px; min-width: 220px; border: 1px solid #1a3557; border-radius: 6px; padding: 0 8px; background: white; font-size: 13px; font-weight: 500; }
+.custom-layout :deep(.sheet-desk) { max-height: calc(100dvh - 150px); }
 .slide-down-enter-active, .slide-down-leave-active { transition: all 0.2s ease; overflow: hidden; }
 .slide-down-enter-from, .slide-down-leave-to { opacity: 0; max-height: 0; transform: translateY(-4px); }
 .slide-down-enter-to, .slide-down-leave-from { opacity: 1; max-height: 500px; }
@@ -2145,5 +2441,10 @@ onMounted(async () => {
     width: 100% !important;
     max-width: 100%;
     font-size: 0.75rem;
+}
+:deep(.p-inputtext.ocr-suspect) {
+    border-color: #dc2626 !important;
+    background: #fef2f2 !important;
+    box-shadow: 0 0 0 1px #dc2626 !important;
 }
 </style>

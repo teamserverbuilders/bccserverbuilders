@@ -1,4 +1,4 @@
-# TDMS — Tax Declaration Management System
+# TDRMS — Tax Declaration Records Management System
 **OCR-Based Digital Archiving with GIS Map Pinning**
 *Municipal / City Assessor's Office*
 

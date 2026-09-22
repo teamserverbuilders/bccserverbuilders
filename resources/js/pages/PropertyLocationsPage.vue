@@ -429,9 +429,9 @@ async function loadPsgcRegions() {
     try {
         const { data } = await axios.get('settings/psgc/regions');
         psgc.regions = Array.isArray(data) ? data : [];
-    } catch {
+    } catch (err) {
         psgc.regions = [];
-        toast.error('PSGC', 'Failed to load regions.');
+        toast.error('PSGC', err?.response?.data?.message || 'Failed to load regions.');
     } finally {
         psgc.loadingRegions = false;
     }
@@ -453,9 +453,9 @@ async function onRegionChange() {
     try {
         const { data } = await axios.get('settings/psgc/provinces', { params: { region_id: psgc.regionId } });
         psgc.provinces = Array.isArray(data) ? data : [];
-    } catch {
+    } catch (err) {
         psgc.provinces = [];
-        toast.error('PSGC', 'Failed to load provinces.');
+        toast.error('PSGC', err?.response?.data?.message || 'Failed to load provinces.');
     } finally {
         psgc.loadingProvinces = false;
     }
@@ -478,9 +478,9 @@ async function onProvinceChange() {
     try {
         const { data } = await axios.get('settings/psgc/municipalities', { params: { province_id: psgc.provinceId } });
         psgc.cities = Array.isArray(data) ? data : [];
-    } catch {
+    } catch (err) {
         psgc.cities = [];
-        toast.error('PSGC', 'Failed to load municipalities.');
+        toast.error('PSGC', err?.response?.data?.message || 'Failed to load municipalities.');
     } finally {
         psgc.loadingCities = false;
     }
@@ -500,9 +500,9 @@ async function onCityChange() {
     try {
         const { data } = await axios.get('settings/psgc/barangays', { params: { city_id: psgc.cityId } });
         psgc.barangays = Array.isArray(data) ? data : [];
-    } catch {
+    } catch (err) {
         psgc.barangays = [];
-        toast.error('PSGC', 'Failed to load barangays.');
+        toast.error('PSGC', err?.response?.data?.message || 'Failed to load barangays.');
     } finally {
         psgc.loadingBarangays = false;
     }

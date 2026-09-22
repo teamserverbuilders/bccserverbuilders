@@ -86,10 +86,26 @@ class OcrController extends Controller
                 throw new \RuntimeException($errMsg);
             }
 
-            $rawText   = collect($body['ParsedResults'] ?? [])->pluck('ParsedText')->implode("\n");
+            $pageTexts = collect($body['ParsedResults'] ?? [])
+                ->pluck('ParsedText')
+                ->map(fn ($text) => (string) $text)
+                ->all();
             $exitCode  = $body['ParsedResults'][0]['FileParseExitCode'] ?? 0;
 
-            $extractedFields = $this->extractFields($rawText);
+            // A single PDF often contains both a Tax Declaration and a Field Appraisal.
+            // The TD form must ignore FA pages, and the FA form must ignore TD pages.
+            $expected = request()->input('expected_document');
+            if (!in_array($expected, ['tax_declaration', 'faas'], true)) {
+                $expected = null;
+            }
+
+            $chunks = $this->splitOcrIntoPages($pageTexts);
+            $selection = $this->selectPagesForDocument($chunks, $expected);
+            $rawText = implode("\n\n", $selection['texts']);
+
+            $extractedFields = $selection['texts'] === []
+                ? []
+                : $this->extractFields($rawText);
 
             // Confidence reflects how much of an actual Tax Declaration we recognized —
             // not just whether OCR.space could technically read the image. A clear photo
@@ -106,11 +122,17 @@ class OcrController extends Controller
                 'processed_at'     => now(),
             ]);
 
+            $skipNote = '';
+            if ($expected && $selection['skipped'] > 0) {
+                $ignored = $expected === 'tax_declaration' ? 'Field Appraisal' : 'Tax Declaration';
+                $skipNote = " Ignored {$selection['skipped']} {$ignored} page(s).";
+            }
+
             OcrLog::create([
                 'ocr_result_id' => $ocrResult->id,
                 'user_id'       => Auth::id(),
                 'action'        => 'scan',
-                'notes'         => "OCR.space scan completed. Confidence: {$confidence}%",
+                'notes'         => "OCR.space scan completed. Confidence: {$confidence}%.{$skipNote}",
             ]);
 
             if ($ocrResult->tax_declaration_id) {
@@ -125,7 +147,179 @@ class OcrController extends Controller
             ]);
         }
 
-        return response()->json($ocrResult->fresh());
+        $payload = $ocrResult->fresh()->toArray();
+        if (isset($selection)) {
+            $payload['pages_used'] = $selection['used'];
+            $payload['pages_skipped'] = $selection['skipped'];
+        }
+
+        return response()->json($payload);
+    }
+
+    /**
+     * Break OCR output into page-sized chunks. OCR.space usually returns one
+     * ParsedText per PDF page; a single blob is also split on form feeds and
+     * on the TD / Field Appraisal titles.
+     *
+     * @param  array<int, string>  $pageTexts
+     * @return array<int, string>
+     */
+    private function splitOcrIntoPages(array $pageTexts): array
+    {
+        $chunks = [];
+
+        foreach ($pageTexts as $text) {
+            $byFeed = preg_split("/\f+/", $text) ?: [$text];
+            foreach ($byFeed as $part) {
+                $part = trim($part);
+                if ($part === '') {
+                    continue;
+                }
+                $parts = preg_split(
+                    '/(?=(?:FIELD\s+APPRA\w*\s+AND\s+ASSESSMENT\s+SHEET|TAX\s+DECLARAT\w*\s+OF\s+REAL\s+PROPERTY))/i',
+                    $part,
+                    -1,
+                    PREG_SPLIT_NO_EMPTY
+                ) ?: [$part];
+
+                foreach ($parts as $chunk) {
+                    $chunk = trim($chunk);
+                    if (mb_strlen(preg_replace('/\s+/', '', $chunk)) >= 15) {
+                        $chunks[] = $chunk;
+                    }
+                }
+            }
+        }
+
+        return $chunks;
+    }
+
+    /**
+     * Keep only pages that belong to the form the user is filling in.
+     *
+     * @param  array<int, string>  $chunks
+     * @return array{texts: array<int, string>, used: int, skipped: int}
+     */
+    private function selectPagesForDocument(array $chunks, ?string $expected): array
+    {
+        if (!$expected || $chunks === []) {
+            return [
+                'texts' => $chunks,
+                'used' => count($chunks),
+                'skipped' => 0,
+            ];
+        }
+
+        $other = $expected === 'tax_declaration' ? 'faas' : 'tax_declaration';
+        $classified = [];
+        $matched = 0;
+
+        foreach ($chunks as $chunk) {
+            $kind = $this->classifyDocumentPage($chunk);
+            if ($kind === $expected) {
+                $matched++;
+            }
+            $classified[] = ['text' => $chunk, 'kind' => $kind];
+        }
+
+        $hasOther = collect($classified)->contains(fn ($page) => $page['kind'] === $other);
+        $kept = [];
+        $skipped = 0;
+
+        foreach ($classified as $page) {
+            if ($page['kind'] === $expected) {
+                $kept[] = $page['text'];
+                continue;
+            }
+
+            if ($page['kind'] === $other || $this->pageLeansToward($page['text'], $other)) {
+                $skipped++;
+                continue;
+            }
+
+            // Unlabeled sheet. Keep it when this file is the requested form
+            // (or we cannot tell). Drop it when the file is the other form.
+            if ($matched === 0 && $hasOther) {
+                $skipped++;
+                continue;
+            }
+
+            $kept[] = $page['text'];
+        }
+
+        return [
+            'texts' => $kept,
+            'used' => count($kept),
+            'skipped' => $skipped,
+        ];
+    }
+
+    private function classifyDocumentPage(string $text): string
+    {
+        $scores = $this->scoreDocumentPage($text);
+        $td = $scores['tax_declaration'];
+        $fa = $scores['faas'];
+
+        if ($fa >= 4 && $fa > $td) {
+            return 'faas';
+        }
+        if ($td >= 4 && $td > $fa) {
+            return 'tax_declaration';
+        }
+        if ($fa >= 3 && $fa >= $td + 2) {
+            return 'faas';
+        }
+        if ($td >= 3 && $td >= $fa + 2) {
+            return 'tax_declaration';
+        }
+
+        return 'unknown';
+    }
+
+    private function pageLeansToward(string $text, string $kind): bool
+    {
+        $scores = $this->scoreDocumentPage($text);
+        $mine = $scores[$kind] ?? 0;
+        $other = $kind === 'faas' ? $scores['tax_declaration'] : $scores['faas'];
+
+        return $mine >= 2 && $mine > $other;
+    }
+
+    /**
+     * @return array{tax_declaration: int, faas: int}
+     */
+    private function scoreDocumentPage(string $text): array
+    {
+        $hit = function (string $pattern, int $weight) use ($text): int {
+            return preg_match($pattern, $text) ? $weight : 0;
+        };
+
+        $td = 0;
+        $td += $hit('/TAX\s+DECLARAT\w*\s+OF\s+REAL\s+PROPERTY/i', 12);
+        $td += $hit('/\bTD\s*NO\.?\b/i', 3);
+        $td += $hit('/PROPERTY\s+IDENTIFICATION\s*(NO|NUMBER)/i', 3);
+        $td += $hit('/KIND\s+OF\s+PROPERTY\s+ASSESSED/i', 4);
+        $td += $hit('/CANCELS?\s+(TD|DECLARATION)/i', 4);
+        $td += $hit('/EFFECTIVITY\s+OF\s+ASSESSMENT/i', 3);
+        $td += $hit('/BENEFICIAL\s+USER/i', 2);
+
+        $fa = 0;
+        $fa += $hit('/FIELD\s+APPRA\w*\s+AND\s+ASSESSMENT\s+SHEET/i', 12);
+        $fa += $hit('/\bFAAS\b/i', 6);
+        $fa += $hit('/LAND\s+SKETCH/i', 4);
+        $fa += $hit('/APPRAISAL\s+INFORMATION/i', 4);
+        $fa += $hit('/VALUE\s+ADJUSTMENT\s+FACTORS?/i', 5);
+        $fa += $hit('/PLANTS?\s+AND\s*\/?\s*TREES/i', 4);
+        $fa += $hit('/KINDS?\s+OF\s+PLANTS/i', 3);
+        $fa += $hit('/INSPECTION\s+DATE/i', 3);
+        $fa += $hit('/TOTAL\s+PERCENTAGE\s+ADJUSTMENT/i', 4);
+        $fa += $hit('/APPRAISED\s+BY/i', 3);
+        $fa += $hit('/\bCONFORME\b/i', 2);
+
+        return [
+            'tax_declaration' => $td,
+            'faas' => $fa,
+        ];
     }
 
     /**

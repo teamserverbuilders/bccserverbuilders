@@ -64,7 +64,7 @@ class FieldAppraisal extends Model
         // GIS / computation / media
         'latitude', 'longitude',
         'computed_market_value', 'computed_assessed_value',
-        'photos', 'attachments', 'remarks', 'status',
+        'photos', 'attachments', 'remarks', 'custom_fields', 'status',
     ];
 
     protected $casts = [
@@ -74,6 +74,7 @@ class FieldAppraisal extends Model
         'computation'         => 'array',
         'photos'              => 'array',
         'attachments'         => 'array',
+        'custom_fields'       => 'array',
         'inspection_date'     => 'date',
         'appraised_by_date'   => 'date',
         'assessed_by_date'    => 'date',

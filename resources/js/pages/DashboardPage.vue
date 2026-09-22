@@ -56,15 +56,35 @@
 
             <!-- Monthly Bar Chart -->
             <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-                <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+                <div class="flex flex-wrap items-center justify-between gap-2 px-5 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
                     <div class="flex items-center gap-2">
                         <i class="pi pi-chart-bar text-[#1a3557] dark:text-blue-400 text-sm"></i>
                         <span class="text-sm font-bold text-[#1a3557] dark:text-slate-200">Monthly Registrations</span>
                     </div>
-                    <span class="text-xs font-medium text-slate-400 border border-slate-200 dark:border-slate-700 rounded px-2 py-0.5">{{ currentYear }}</span>
+                    <div class="flex items-center gap-2">
+                        <Select
+                            v-model="chartYear"
+                            :options="yearOptions"
+                            placeholder="Year"
+                            class="chart-year-select"
+                            @update:modelValue="onYearChange"
+                        />
+                        <DatePicker
+                            v-model="chartRange"
+                            selectionMode="range"
+                            dateFormat="M d, yy"
+                            placeholder="From – To"
+                            showIcon
+                            showButtonBar
+                            hideOnRangeSelection
+                            class="chart-date-filter"
+                            inputClass="!text-xs"
+                            @update:modelValue="onRangeChange"
+                        />
+                    </div>
                 </div>
                 <div class="p-5 h-56">
-                    <Bar v-if="chartData" :data="chartData" :options="chartOptions" />
+                    <Bar v-if="chartData && !chartLoading" :data="chartData" :options="chartOptions" />
                     <div v-else class="h-full bg-slate-50 dark:bg-slate-800/30 rounded animate-pulse"></div>
                 </div>
             </div>
@@ -75,21 +95,9 @@
                     <i class="pi pi-chart-pie text-[#1a3557] dark:text-blue-400 text-sm"></i>
                     <span class="text-sm font-bold text-[#1a3557] dark:text-slate-200">By Classification</span>
                 </div>
-                <div class="p-5">
-                    <div class="h-36 flex items-center justify-center">
-                        <Doughnut v-if="classChartData" :data="classChartData" :options="doughnutOptions" />
-                        <div v-else class="w-36 h-36 rounded-full bg-slate-100 dark:bg-slate-800 animate-pulse"></div>
-                    </div>
-                    <div class="mt-4 space-y-2">
-                        <div v-for="item in (stats.by_classification || [])" :key="item.classification_id"
-                            class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ background: item.classification?.color ?? '#1a3557' }"></span>
-                                <span class="text-xs text-slate-600 dark:text-slate-400 truncate max-w-[110px]">{{ item.classification?.name }}</span>
-                            </div>
-                            <span class="text-xs font-bold text-[#1a3557] dark:text-slate-200">{{ item.count }}</span>
-                        </div>
-                    </div>
+                <div class="p-5 h-56">
+                    <Doughnut v-if="classChartData" :data="classChartData" :options="doughnutOptions" />
+                    <div v-else class="h-full w-44 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 animate-pulse"></div>
                 </div>
             </div>
         </div>
@@ -206,14 +214,72 @@ import {
     Chart as ChartJS, CategoryScale, LinearScale, BarElement,
     ArcElement, Title, Tooltip, Legend,
 } from 'chart.js';
+import Select from 'primevue/select';
+import DatePicker from 'primevue/datepicker';
 import axios from 'axios';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
+const pieSliceLabels = {
+    id: 'pieSliceLabels',
+    afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        if (chart.config.type !== 'pie' && chart.config.type !== 'doughnut') return;
+        const meta = chart.getDatasetMeta(0);
+        if (!meta?.data?.length) return;
+        const dataset = chart.data.datasets[0];
+        const labels = chart.data.labels || [];
+        const total = dataset.data.reduce((sum, n) => sum + Number(n || 0), 0);
+        if (!total) return;
 
-const loading     = ref(true);
-const stats       = ref({});
-const today       = computed(() => new Date().toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
-const currentYear = new Date().getFullYear();
+        meta.data.forEach((arc, i) => {
+            const value = Number(dataset.data[i] || 0);
+            if (!value || value / total < 0.04) return;
+            const pos = arc.tooltipPosition();
+            const color = dataset.backgroundColor?.[i] || '#1a3557';
+            const name = String(labels[i] || '');
+            ctx.save();
+            ctx.fillStyle = contrastColor(color);
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillText(name.length > 14 ? `${name.slice(0, 13)}…` : name, pos.x, pos.y - 7);
+            ctx.font = '10px sans-serif';
+            ctx.fillText(String(value), pos.x, pos.y + 8);
+            ctx.restore();
+        });
+    },
+};
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend, pieSliceLabels);
+
+const loading      = ref(true);
+const chartLoading = ref(false);
+const stats        = ref({});
+const chartYear    = ref(new Date().getFullYear());
+const chartRange   = ref(null);
+const today        = computed(() => new Date().toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
+
+function contrastColor(hex) {
+    const raw = String(hex || '#1a3557').replace('#', '');
+    if (raw.length < 6) return '#ffffff';
+    const r = parseInt(raw.slice(0, 2), 16);
+    const g = parseInt(raw.slice(2, 4), 16);
+    const b = parseInt(raw.slice(4, 6), 16);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.62 ? '#1a3557' : '#ffffff';
+}
+
+function formatIsoDate(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+}
+
+const yearOptions = computed(() => {
+    const years = (stats.value.available_years || []).map(Number).filter(Boolean);
+    years.push(chartYear.value, new Date().getFullYear());
+    return [...new Set(years)].sort((a, b) => b - a);
+});
 
 const digitizationPercent = computed(() => {
     if (!stats.value.total) return 0;
@@ -258,13 +324,42 @@ const systemHealth = [
     { label: 'Last Backup', dot: 'bg-green-400', status: 'Today',     badge: 'bg-green-100 text-green-700' },
 ];
 
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
 const chartData = computed(() => {
-    if (!stats.value.monthly_data?.length) return null;
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const data   = Array(12).fill(0);
-    stats.value.monthly_data.forEach(m => { data[m.month - 1] = m.count; });
+    if (loading.value && !stats.value.monthly_data) return null;
+    const rows = stats.value.monthly_data || [];
+    const countByKey = {};
+    rows.forEach((row) => {
+        const year = Number(row.year || chartYear.value);
+        countByKey[`${year}-${Number(row.month)}`] = Number(row.count || 0);
+    });
+
+    const from = chartRange.value?.[0];
+    const to = chartRange.value?.[1];
+    const labels = [];
+    const data = [];
+
+    if (from && to) {
+        const cursor = new Date(from.getFullYear(), from.getMonth(), 1);
+        const end = new Date(to.getFullYear(), to.getMonth(), 1);
+        const spanYears = from.getFullYear() !== to.getFullYear();
+        while (cursor <= end) {
+            const y = cursor.getFullYear();
+            const m = cursor.getMonth();
+            labels.push(spanYears ? `${MONTHS[m]} ${y}` : MONTHS[m]);
+            data.push(countByKey[`${y}-${m + 1}`] || 0);
+            cursor.setMonth(cursor.getMonth() + 1);
+        }
+    } else {
+        MONTHS.forEach((label, index) => {
+            labels.push(label);
+            data.push(countByKey[`${chartYear.value}-${index + 1}`] || 0);
+        });
+    }
+
     return {
-        labels: months,
+        labels,
         datasets: [{
             label: 'Registrations',
             data,
@@ -284,8 +379,9 @@ const classChartData = computed(() => {
         datasets: [{
             data: stats.value.by_classification.map(c => c.count),
             backgroundColor: stats.value.by_classification.map(c => c.classification?.color || '#1a3557'),
-            borderWidth: 0,
-            hoverOffset: 4,
+            borderWidth: 2,
+            borderColor: '#ffffff',
+            hoverOffset: 6,
         }],
     };
 });
@@ -306,16 +402,80 @@ const chartOptions = {
 const doughnutOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    cutout: '70%',
-    plugins: { legend: { display: false } },
+    cutout: '58%',
+    plugins: {
+        legend: { display: false },
+        tooltip: {
+            callbacks: {
+                label(ctx) {
+                    const total = ctx.dataset.data.reduce((sum, n) => sum + Number(n || 0), 0);
+                    const value = Number(ctx.parsed || 0);
+                    const pct = total ? Math.round((value / total) * 100) : 0;
+                    return ` ${ctx.label}: ${value} (${pct}%)`;
+                },
+            },
+        },
+    },
 };
 
-onMounted(async () => {
+async function fetchStats({ full = false } = {}) {
+    if (full) loading.value = true;
+    else chartLoading.value = true;
     try {
-        const { data } = await axios.get('dashboard/statistics');
+        const params = { year: chartYear.value };
+        if (Array.isArray(chartRange.value) && chartRange.value[0] && chartRange.value[1]) {
+            params.from = formatIsoDate(chartRange.value[0]);
+            params.to = formatIsoDate(chartRange.value[1]);
+        }
+        const { data } = await axios.get('dashboard/statistics', { params });
         stats.value = data;
     } finally {
         loading.value = false;
+        chartLoading.value = false;
     }
-});
+}
+
+function onYearChange() {
+    chartRange.value = null;
+    fetchStats();
+}
+
+function onRangeChange(value) {
+    if (Array.isArray(value) && value[0] && value[1]) {
+        fetchStats();
+    } else if (!value) {
+        fetchStats();
+    }
+}
+
+onMounted(() => fetchStats({ full: true }));
 </script>
+
+<style scoped>
+.chart-year-select {
+    width: 7.25rem;
+    min-width: 7.25rem;
+    flex-shrink: 0;
+}
+.chart-year-select :deep(.p-select) {
+    width: 100%;
+}
+.chart-year-select :deep(.p-select-label) {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+    padding-right: 0.25rem;
+}
+.chart-year-select :deep(.p-select),
+.chart-date-filter :deep(.p-datepicker),
+.chart-date-filter :deep(.p-inputtext) {
+    font-size: 0.75rem;
+}
+.chart-date-filter {
+    width: 14.5rem;
+}
+.chart-date-filter :deep(.p-inputtext) {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+}
+</style>

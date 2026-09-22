@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FormLayoutController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TaxDeclarationController;
 use App\Http\Controllers\PropertyOwnerController;
@@ -27,6 +28,9 @@ Route::prefix('api')->group(function () {
 
     // Public routes
     Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::post('/auth/forgot-password', [AuthController::class, 'sendPasswordOtp']);
+    Route::post('/auth/verify-otp', [AuthController::class, 'verifyPasswordOtp']);
+    Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
     // QR Verification (public)
     Route::get('/verify/{tdNumber}', function (string $tdNumber) {
@@ -159,6 +163,14 @@ Route::prefix('api')->group(function () {
         Route::post('/users/{user}/toggle-status', [UserController::class, 'toggleStatus']);
         Route::put('/users/{user}/permissions', [UserController::class, 'syncPermissions']);
         Route::apiResource('users', UserController::class);
+
+        Route::get('/form-layouts', [FormLayoutController::class, 'index']);
+        Route::post('/form-layouts', [FormLayoutController::class, 'store']);
+        Route::get('/form-layouts/{formLayout}', [FormLayoutController::class, 'show']);
+        Route::put('/form-layouts/{formLayout}', [FormLayoutController::class, 'update']);
+        Route::delete('/form-layouts/{formLayout}', [FormLayoutController::class, 'destroy']);
+        Route::post('/form-layouts/{formLayout}/image', [FormLayoutController::class, 'uploadImage']);
+        Route::post('/form-layouts/{formLayout}/entries', [FormLayoutController::class, 'storeEntry']);
 
         // Settings
         Route::get('/settings/municipalities', [SettingsController::class, 'municipalities']);

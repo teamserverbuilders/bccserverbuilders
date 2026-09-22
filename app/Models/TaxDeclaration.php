@@ -52,7 +52,7 @@ class TaxDeclaration extends Model
         'previous_td_number', 'previous_owner', 'previous_av',
 
         // Approval & meta
-        'date_issued', 'remarks', 'memoranda',
+        'date_issued', 'remarks', 'memoranda', 'custom_fields',
         'approved_by', 'approved_at', 'approved_by_name',
         'is_locked', 'locked_by', 'locked_at',
         'created_by', 'updated_by', 'qr_code', 'version',
@@ -77,6 +77,7 @@ class TaxDeclaration extends Model
         'kind_of_property'      => 'array',
         'valuation_rows'        => 'array',
         'assessment_rows'       => 'array',
+        'custom_fields'         => 'array',
     ];
 
     protected static function booted(): void

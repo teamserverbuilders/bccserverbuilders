@@ -70,7 +70,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="form-label">ARP No. <span class="text-red-500">*</span></label>
-                                <InputText v-model="form.appraisal_no" class="w-full" required />
+                                <InputText :modelValue="form.appraisal_no" inputmode="numeric" class="w-full" required @update:modelValue="form.appraisal_no = digitsOnly($event)" />
                                 <small v-if="errors.appraisal_no" class="text-red-500 text-xs">{{ errors.appraisal_no[0] }}</small>
                             </div>
                             <div>
@@ -113,7 +113,7 @@
                                                     <span class="px-2 py-2 text-xs font-medium bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600 whitespace-nowrap">T.I.N.</span>
                                                     <InputText v-model="form2Identity.owner_tin" class="!w-full !border-0 !rounded-none !shadow-none" placeholder="TIN" />
                                                     <span class="px-2 py-2 text-xs font-medium bg-slate-50 dark:bg-slate-800 border-x border-slate-300 dark:border-slate-600 whitespace-nowrap">Tel No.</span>
-                                                    <InputText v-model="form2Identity.owner_telephone" class="!w-full !border-0 !rounded-none !shadow-none" placeholder="Tel" />
+                                                    <InputText :modelValue="form2Identity.owner_telephone" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" placeholder="Tel" @update:modelValue="form2Identity.owner_telephone = digitsOnly($event)" />
                                                 </div>
                                             </div>
                                         </td>
@@ -131,7 +131,7 @@
                                                     <span class="px-2 py-2 text-xs font-medium bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600 whitespace-nowrap">T.I.N.</span>
                                                     <InputText v-model="form2Identity.administrator_tin" class="!w-full !border-0 !rounded-none !shadow-none" placeholder="TIN" />
                                                     <span class="px-2 py-2 text-xs font-medium bg-slate-50 dark:bg-slate-800 border-x border-slate-300 dark:border-slate-600 whitespace-nowrap">Tel No.</span>
-                                                    <InputText v-model="form2Identity.administrator_telephone" class="!w-full !border-0 !rounded-none !shadow-none" placeholder="Tel" />
+                                                    <InputText :modelValue="form2Identity.administrator_telephone" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" placeholder="Tel" @update:modelValue="form2Identity.administrator_telephone = digitsOnly($event)" />
                                                 </div>
                                             </div>
                                         </td>
@@ -531,7 +531,12 @@
                                     <tr v-for="row in referenceRows" :key="row.key">
                                         <td class="border border-slate-300 dark:border-slate-600 px-2 py-1.5 font-medium whitespace-nowrap">{{ row.label }}</td>
                                         <td class="border border-slate-300 dark:border-slate-600 p-0">
-                                            <InputText v-model="references[row.key]" class="cell-input" />
+                                            <InputText
+                                                :modelValue="references[row.key]"
+                                                class="cell-input"
+                                                :inputmode="numberOnlyLabel(row.label) ? 'numeric' : 'text'"
+                                                @update:modelValue="references[row.key] = numberOnlyLabel(row.label) ? digitsOnly($event) : $event"
+                                            />
                                         </td>
                                         <td class="border border-slate-300 dark:border-slate-600 p-0">
                                             <DatePicker v-model="posting[row.key].date" class="w-full" dateFormat="mm/dd/yy" showIcon inputClass="!border-0 !rounded-none !shadow-none !text-xs" />
@@ -646,9 +651,9 @@
                                     Scan {{ ocr.files.length }} Document{{ ocr.files.length > 1 ? 's' : '' }}
                                 </button>
 
-                                <div v-if="ocr.scanning" class="flex items-center gap-2 text-xs text-violet-600">
-                                    <span class="w-3.5 h-3.5 border-2 border-violet-600 border-t-transparent rounded-full animate-spin"></span>
-                                    {{ ocr.scanProgress || 'Processing OCR…' }}
+                                <div v-if="ocr.scanning" class="flex items-center gap-2 min-w-0 text-xs text-violet-600">
+                                    <span class="inline-block shrink-0 w-3.5 h-3.5 border-2 border-violet-600 border-t-transparent rounded-full animate-spin"></span>
+                                    <span class="truncate">{{ ocr.scanProgress || 'Processing OCR…' }}</span>
                                 </div>
 
                                 <div v-if="ocr.result" class="space-y-2 p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg">
@@ -734,10 +739,13 @@
                     <div class="flex-1 overflow-auto p-4 space-y-3">
                         <div v-for="(value, key) in reviewFields" :key="key" class="flex items-start gap-3">
                             <div class="w-40 shrink-0 pt-1.5">
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">{{ formatReviewLabel(key) }}</span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider" :class="fieldIssues[key] ? 'text-red-600' : 'text-slate-400'">{{ formatReviewLabel(key) }}</span>
                             </div>
-                            <div class="flex-1">
-                                <InputText v-model="reviewFields[key]" class="w-full text-sm" size="small" />
+                            <div class="flex-1 min-w-0">
+                                <InputText v-model="reviewFields[key]" class="w-full text-sm" :class="{ 'ocr-suspect': fieldIssues[key] }" size="small" />
+                                <p v-if="fieldIssues[key]" class="mt-1 text-[10px] leading-snug text-red-600">
+                                    <i class="pi pi-exclamation-circle mr-1"></i>{{ fieldIssues[key] }}
+                                </p>
                             </div>
                             <button type="button" @click="delete reviewFields[key]" class="shrink-0 w-6 h-6 mt-1 flex items-center justify-center rounded text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors" title="Remove field">
                                 <i class="pi pi-times text-[10px]"></i>
@@ -755,6 +763,7 @@
                         </button>
                         <div class="flex-1"></div>
                         <span class="text-[10px] text-slate-400 mr-2">{{ Object.keys(reviewFields).length }} fields</span>
+                        <span v-if="suspectCount" class="text-[10px] font-semibold text-red-600 mr-2">{{ suspectCount }} to check</span>
                         <button type="button" @click="applyReviewedFields"
                             class="h-8 px-5 rounded-md bg-green-600 hover:bg-green-700 text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm">
                             <i class="pi pi-check text-[10px]"></i> Apply to Form
@@ -789,18 +798,21 @@
                     </div>
 
                     <div class="flex-1 overflow-auto p-4 space-y-3">
-                        <div v-if="ocr.scanning" class="flex flex-col items-center justify-center h-full text-violet-500">
-                            <span class="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mb-2"></span>
-                            <p class="text-xs">{{ ocr.scanProgress || 'Scanning document…' }}</p>
+                        <div v-if="ocr.scanning" class="flex flex-col items-center justify-center h-full text-violet-500 text-center px-4">
+                            <span class="inline-block shrink-0 w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mb-2"></span>
+                            <p class="text-xs max-w-full truncate">{{ ocr.scanProgress || 'Scanning document…' }}</p>
                         </div>
 
                         <template v-else-if="Object.keys(reviewFields).length">
                             <div v-for="(value, key) in reviewFields" :key="key" class="flex items-start gap-3">
                                 <div class="w-32 shrink-0 pt-1.5">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">{{ formatReviewLabel(key) }}</span>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider" :class="fieldIssues[key] ? 'text-red-600' : 'text-slate-400'">{{ formatReviewLabel(key) }}</span>
                                 </div>
-                                <div class="flex-1">
-                                    <InputText v-model="reviewFields[key]" class="w-full text-sm" size="small" />
+                                <div class="flex-1 min-w-0">
+                                    <InputText v-model="reviewFields[key]" class="w-full text-sm" :class="{ 'ocr-suspect': fieldIssues[key] }" size="small" />
+                                    <p v-if="fieldIssues[key]" class="mt-1 text-[10px] leading-snug text-red-600">
+                                        <i class="pi pi-exclamation-circle mr-1"></i>{{ fieldIssues[key] }}
+                                    </p>
                                 </div>
                                 <button type="button" @click="delete reviewFields[key]" class="shrink-0 w-6 h-6 mt-1 flex items-center justify-center rounded text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors" title="Remove field">
                                     <i class="pi pi-times text-[10px]"></i>
@@ -888,7 +900,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useRoute, useRouter, RouterLink } from 'vue-router';
 import { useToast } from '@/composables/useToast';
 import InputText from 'primevue/inputtext';
@@ -900,6 +912,8 @@ import AutoComplete from 'primevue/autocomplete';
 import Dialog from 'primevue/dialog';
 import FieldAppraisalForm2Sheet from '@/pages/field-appraisals/FieldAppraisalForm2Sheet.vue';
 import axios from 'axios';
+import { findOcrTextIssues } from '@/utils/ocrSpellcheck';
+import { digitsOnly, numberOnlyLabel } from '@/utils/digitsOnly';
 
 const route  = useRoute();
 const router = useRouter();
@@ -1143,13 +1157,19 @@ async function runOcr() {
     try {
         const merged = {};
         const scores = [];
+        let pagesSkipped = 0;
         for (let i = 0; i < ocr.files.length; i++) {
             const file = ocr.files[i];
-            ocr.scanProgress = `Scanning ${i + 1} of ${ocr.files.length}: ${file.name}`;
+            ocr.scanProgress = `Scanning ${i + 1} of ${ocr.files.length}…`;
             const fd = new FormData();
             fd.append('file', file);
             const { data: uploadRes } = await axios.post('ocr/upload', fd);
-            const { data: scanRes } = await axios.post(`ocr/${uploadRes.id}/scan`);
+            const { data: scanRes } = await axios.post(`ocr/${uploadRes.id}/scan`, {
+                expected_document: 'faas',
+            });
+            const used = Number(scanRes.pages_used ?? 1);
+            pagesSkipped += Number(scanRes.pages_skipped ?? 0);
+            if (used <= 0) continue;
             mergeOcrFields(merged, scanRes.extracted_fields || {});
             if (scanRes.confidence_score != null) scores.push(Number(scanRes.confidence_score));
         }
@@ -1161,10 +1181,18 @@ async function runOcr() {
         Object.keys(reviewFields).forEach((k) => delete reviewFields[k]);
         Object.assign(reviewFields, JSON.parse(JSON.stringify(ocr.result)));
 
+        const skipNote = pagesSkipped > 0
+            ? ` Skipped ${pagesSkipped} Tax Declaration page${pagesSkipped === 1 ? '' : 's'}.`
+            : '';
         if (Object.keys(merged).length === 0) {
-            toast.warn('No Fields Detected', 'This does not look like a Tax Declaration document. Make sure the actual TD form is in frame, well-lit, and try again.');
+            toast.warn(
+                pagesSkipped > 0 ? 'Tax Declaration skipped' : 'No Fields Detected',
+                pagesSkipped > 0
+                    ? 'This form only reads Field Appraisal pages. The upload did not include a Field Appraisal page.'
+                    : 'This does not look like a Field Appraisal document. Make sure the actual FAAS form is in frame, well-lit, and try again.',
+            );
         } else {
-            toast.success('OCR Complete', `${ocr.filesScanned} file(s) · Confidence: ${ocr.confidence}%`);
+            toast.success('OCR Complete', `${ocr.filesScanned} file(s) · Confidence: ${ocr.confidence}%.${skipNote}`);
         }
     } catch (err) {
         toast.error('OCR Failed', err.response?.data?.message || 'Scan error.');
@@ -1213,6 +1241,18 @@ const reviewLabelMap = {
 function formatReviewLabel(key) {
     return reviewLabelMap[key] || String(key).replace(/_/g, ' ');
 }
+
+const fieldIssues = computed(() => {
+    const extra = [...assessmentKinds];
+    const issues = {};
+    for (const key of Object.keys(reviewFields)) {
+        const note = findOcrTextIssues(reviewFields[key], key, extra);
+        if (note) issues[key] = note;
+    }
+    return issues;
+});
+
+const suspectCount = computed(() => Object.keys(fieldIssues.value).length);
 
 function applyReviewedFields() {
     ocr.result = JSON.parse(JSON.stringify(reviewFields));
@@ -1722,6 +1762,33 @@ const posting = reactive({
     arp_no: { date: null, clerk_initial: '', post_inspection: '' },
     ar_page_no: { date: null, clerk_initial: '', post_inspection: '' },
 });
+
+for (const key of ['appraisal_no']) {
+    watch(() => form[key], (value) => {
+        if (value == null || value === '') return;
+        const next = digitsOnly(value);
+        if (String(value) !== next) form[key] = next;
+    });
+}
+for (const key of ['arp_no', 'oct_tct_kot_no', 'survey_no', 'cad_pls_lot_no', 'owner_telephone', 'administrator_telephone']) {
+    watch(() => form2Identity[key], (value) => {
+        if (value == null || value === '') return;
+        const next = digitsOnly(value);
+        if (String(value) !== next) form2Identity[key] = next;
+    });
+}
+watch(() => conforme.ctc_no, (value) => {
+    if (value == null || value === '') return;
+    const next = digitsOnly(value);
+    if (String(value) !== next) conforme.ctc_no = next;
+});
+for (const key of ['arp_no', 'ar_page_no']) {
+    watch(() => references[key], (value) => {
+        if (value == null || value === '') return;
+        const next = digitsOnly(value);
+        if (String(value) !== next) references[key] = next;
+    });
+}
 
 function emptyLandRow() {
     return {
@@ -2279,4 +2346,10 @@ onMounted(async () => {
 .slide-down-enter-active, .slide-down-leave-active { transition: all 0.2s ease; overflow: hidden; }
 .slide-down-enter-from, .slide-down-leave-to { opacity: 0; max-height: 0; transform: translateY(-4px); }
 .slide-down-enter-to, .slide-down-leave-from { opacity: 1; max-height: 500px; }
+
+:deep(.p-inputtext.ocr-suspect) {
+    border-color: #dc2626 !important;
+    background: #fef2f2 !important;
+    box-shadow: 0 0 0 1px #dc2626 !important;
+}
 </style>

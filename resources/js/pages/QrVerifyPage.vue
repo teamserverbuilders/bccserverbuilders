@@ -5,7 +5,7 @@
             <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-center">
                 <i class="pi pi-verified text-white text-4xl mb-2 block"></i>
                 <h1 class="text-xl font-bold text-white">Property Verification</h1>
-                <p class="text-blue-100 text-sm mt-1">Tax Declaration Management System</p>
+                <p class="text-blue-100 text-sm mt-1">TDRMS · Tax Declaration Records Management System</p>
             </div>
 
             <div class="p-6">
@@ -36,7 +36,7 @@
                     </div>
 
                     <p class="text-xs text-gray-400 text-center">
-                        Verified by TDMS · {{ new Date().toLocaleDateString('en-PH', { dateStyle: 'full' }) }}
+                        Verified by TDRMS · {{ new Date().toLocaleDateString('en-PH', { dateStyle: 'full' }) }}
                     </p>
                 </div>
 

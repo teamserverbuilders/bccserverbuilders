@@ -20,7 +20,7 @@
                     <p
                         class="text-[12px] font-bold text-white leading-tight whitespace-nowrap tracking-wide uppercase"
                     >
-                        Assessor's Office
+                        TDRMS
                     </p>
                     <p
                         class="text-[10px] text-blue-300 leading-tight whitespace-nowrap mt-0.5"
@@ -64,7 +64,7 @@
                 v-if="!collapsed"
                 class="text-[10px] text-blue-400/50 whitespace-nowrap"
             >
-                TDMS v1.0 — {{ year }}
+                TDRMS v1.0 — {{ year }}
             </p>
             <p v-else class="text-[10px] text-blue-400/50 text-center">v1</p>
         </div>
@@ -133,6 +133,7 @@ const navGroups = [
             { to: "/users", label: "User Management", icon: "pi-user-edit" },
             { to: "/roles", label: "Roles & Permissions", icon: "pi-shield" },
             { to: "/settings", label: "Settings", icon: "pi-cog" },
+            { to: "/form-layouts", label: "Form List", icon: "pi-table" },
         ],
     },
 ];

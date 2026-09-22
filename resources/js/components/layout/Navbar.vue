@@ -20,7 +20,7 @@
 
             <!-- Breadcrumb -->
             <div class="hidden md:flex items-center gap-1.5 text-sm">
-                <span class="text-slate-400 dark:text-slate-500 text-xs uppercase tracking-wide font-medium">TDMS</span>
+                <span class="text-slate-400 dark:text-slate-500 text-xs uppercase tracking-wide font-medium">TDRMS</span>
                 <i class="pi pi-chevron-right text-[9px] text-slate-300"></i>
                 <span class="font-semibold text-[#1a3557] dark:text-slate-200 text-sm">{{ pageTitle }}</span>
             </div>
@@ -125,6 +125,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRoute, useRouter, RouterLink } from 'vue-router';
+import { useConfirm } from 'primevue/useconfirm';
 import { useAuthStore } from '@/stores/auth';
 import GlobalSearch from '@/components/layout/GlobalSearch.vue';
 
@@ -133,6 +134,7 @@ defineEmits(['toggle']);
 
 const route    = useRoute();
 const router   = useRouter();
+const confirm  = useConfirm();
 const authStore = useAuthStore();
 
 const showUserMenu   = ref(false);
@@ -159,16 +161,28 @@ const routeTitles = {
     'ownership-history': 'Ownership History',
     users: 'User Management',
     roles: 'Roles & Permissions', audit: 'Audit Trail',
-    settings: 'System Settings', profile: 'My Profile',
+    settings: 'System Settings', 'form-layouts': 'Form List',
+    'form-layout-new': 'New Form', 'form-layout-edit': 'Edit Form', 'form-layout-view': 'View Form',
+    profile: 'My Profile',
     search: 'Search Results',
 };
 
-const pageTitle = computed(() => routeTitles[route.name] || 'TDMS');
+const pageTitle = computed(() => routeTitles[route.name] || 'TDRMS');
 
-async function handleLogout() {
+function handleLogout() {
     showUserMenu.value = false;
-    await authStore.logout();
-    router.push({ name: 'login' });
+    confirm.require({
+        message: 'Are you sure you want to log out?',
+        header: 'Log out',
+        icon: 'pi pi-sign-out',
+        acceptLabel: 'Log out',
+        rejectLabel: 'Cancel',
+        acceptClass: 'p-button-danger',
+        accept: async () => {
+            await authStore.logout();
+            router.push({ name: 'login' });
+        },
+    });
 }
 </script>
 

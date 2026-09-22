@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\TaxDeclaration;
 use App\Models\PropertyOwner;
 use App\Models\PropertyVersion;
@@ -449,8 +448,21 @@ class TaxDeclarationController extends Controller
         return $pdf->download("TD-{$taxDeclaration->td_number}.pdf");
     }
 
-    public function statistics()
+    public function statistics(Request $request)
     {
+        $year = $request->filled('year') ? (int) $request->year : now()->year;
+        $from = $request->filled('from') ? \Carbon\Carbon::parse($request->from)->startOfDay() : null;
+        $to = $request->filled('to') ? \Carbon\Carbon::parse($request->to)->endOfDay() : null;
+
+        $monthlyQuery = TaxDeclaration::query()
+            ->selectRaw('MONTH(created_at) as month, YEAR(created_at) as year, COUNT(*) as count');
+
+        if ($from && $to) {
+            $monthlyQuery->whereBetween('created_at', [$from, $to]);
+        } else {
+            $monthlyQuery->whereYear('created_at', $year);
+        }
+
         return response()->json([
             'total' => TaxDeclaration::count(),
             'residential' => TaxDeclaration::whereHas('classification', fn($q) => $q->where('name', 'like', '%Residential%'))->count(),
@@ -463,10 +475,14 @@ class TaxDeclarationController extends Controller
             'archived' => TaxDeclaration::where('status', 'archived')->count(),
             'rejected' => TaxDeclaration::where('status', 'rejected')->count(),
             'today_uploads' => TaxDeclaration::whereDate('created_at', today())->count(),
-            'monthly_data' => TaxDeclaration::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
-                ->whereYear('created_at', now()->year)
-                ->groupBy('month')
-                ->orderBy('month')
+            'available_years' => TaxDeclaration::selectRaw('YEAR(created_at) as year')
+                ->distinct()
+                ->orderByDesc('year')
+                ->pluck('year'),
+            'monthly_data' => $monthlyQuery
+                ->groupBy(DB::raw('YEAR(created_at)'), DB::raw('MONTH(created_at)'))
+                ->orderBy(DB::raw('YEAR(created_at)'))
+                ->orderBy(DB::raw('MONTH(created_at)'))
                 ->get(),
             'by_barangay' => TaxDeclaration::selectRaw('barangay_id, COUNT(*) as count')
                 ->with('barangay:id,name')

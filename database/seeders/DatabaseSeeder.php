@@ -113,7 +113,7 @@ class DatabaseSeeder extends Seeder
 
         // System Settings
         $settings = [
-            ['key' => 'app_name', 'value' => 'TDMS', 'group' => 'general'],
+            ['key' => 'app_name', 'value' => 'TDRMS', 'group' => 'general'],
             ['key' => 'municipality_name', 'value' => 'Municipality of Sample', 'group' => 'general'],
             ['key' => 'ocr_enabled', 'value' => 'true', 'group' => 'ocr'],
             ['key' => 'max_upload_size', 'value' => '20', 'group' => 'general'],

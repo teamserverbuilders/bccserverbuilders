@@ -11,6 +11,7 @@ use App\Models\TaxType;
 use App\Models\Department;
 use App\Models\Position;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
@@ -69,62 +70,202 @@ class SettingsController extends Controller
     }
 
     /**
-     * Get regions from PSGC API.
+     * Regions from the public PSGC directory.
+     * The previous host (psgc.rootscratch.com) returns HTTP 500, so a cleared
+     * browser cache left these dropdowns empty. Results are cached on the server.
      */
     public function psgcRegions()
     {
         try {
-            $response = Http::timeout(10)->get('https://psgc.rootscratch.com/region');
-            return response()->json($response->json() ?? []);
-        } catch (\Exception $e) {
-            return response()->json([]);
+            return $this->psgcResponse($this->psgcRows(
+                $this->rememberPsgc('https://psgc.gitlab.io/api/regions.json')
+            ));
+        } catch (\Throwable $e) {
+            return $this->psgcError($e);
         }
     }
 
     /**
-     * Get provinces for a region from PSGC API.
+     * Provinces for a region. Cities with no province (NCR, Isabela City)
+     * are included so the same dropdown can still reach their barangays.
      */
     public function psgcProvinces(Request $request)
     {
+        $regionId = preg_replace('/\D/', '', (string) $request->get('region_id'));
+        if ($regionId === '') {
+            return $this->psgcResponse([]);
+        }
+
         try {
-            $response = Http::timeout(10)->get('https://psgc.rootscratch.com/province', [
-                'id' => $request->get('region_id'),
-            ]);
-            return response()->json($response->json() ?? []);
-        } catch (\Exception $e) {
-            return response()->json([]);
+            $rows = $this->psgcRows($this->rememberPsgc(
+                "https://psgc.gitlab.io/api/regions/{$regionId}/provinces.json"
+            ));
+            $cities = $this->rememberPsgc("https://psgc.gitlab.io/api/regions/{$regionId}/cities.json");
+            foreach ($cities as $city) {
+                if (!is_array($city) || !empty($city['provinceCode']) || empty($city['code'])) {
+                    continue;
+                }
+                $rows[] = [
+                    'psgc_id' => (string) $city['code'],
+                    'name' => (string) $city['name'],
+                ];
+            }
+            usort($rows, fn ($a, $b) => strcasecmp($a['name'], $b['name']));
+
+            return $this->psgcResponse($rows);
+        } catch (\Throwable $e) {
+            return $this->psgcError($e);
         }
     }
 
     /**
-     * Get municipalities/cities for a province from PSGC API.
+     * Cities and municipalities for a province. A city chosen from the
+     * province list (NCR) is returned as the only municipality.
      */
     public function psgcMunicipalities(Request $request)
     {
+        $provinceId = preg_replace('/\D/', '', (string) $request->get('province_id'));
+        if ($provinceId === '') {
+            return $this->psgcResponse([]);
+        }
+
         try {
-            $provinceId = $request->get('province_id');
-            $response = Http::timeout(15)->get('https://psgc.rootscratch.com/municipal-city', [
-                'id' => $provinceId,
-            ]);
-            return response()->json($response->json() ?? []);
-        } catch (\Exception $e) {
-            return response()->json([]);
+            $rows = $this->psgcRows($this->rememberPsgc(
+                "https://psgc.gitlab.io/api/provinces/{$provinceId}/cities-municipalities.json"
+            ));
+            if (!$rows) {
+                $rows = $this->psgcRows($this->rememberPsgc(
+                    "https://psgc.gitlab.io/api/cities-municipalities/{$provinceId}.json"
+                ));
+            }
+
+            return $this->psgcResponse($rows);
+        } catch (\Throwable $e) {
+            return $this->psgcError($e);
         }
     }
 
     /**
-     * Get barangays for a municipality from PSGC API.
+     * Barangays for a city or municipality.
      */
     public function psgcBarangays(Request $request)
     {
-        try {
-            $response = Http::timeout(15)->get('https://psgc.rootscratch.com/barangay', [
-                'id' => $request->get('city_id'),
-            ]);
-            return response()->json($response->json() ?? []);
-        } catch (\Exception $e) {
-            return response()->json([]);
+        $cityId = preg_replace('/\D/', '', (string) $request->get('city_id'));
+        if ($cityId === '') {
+            return $this->psgcResponse([]);
         }
+
+        try {
+            return $this->psgcResponse($this->psgcRows($this->rememberPsgc(
+                "https://psgc.gitlab.io/api/cities-municipalities/{$cityId}/barangays.json"
+            )));
+        } catch (\Throwable $e) {
+            return $this->psgcError($e);
+        }
+    }
+
+    private function rememberPsgc(string $url): array
+    {
+        $key = 'psgc.gitlab.'.md5($url);
+        try {
+            $cached = Cache::get($key);
+            if (is_array($cached)) {
+                return $cached;
+            }
+        } catch (\Throwable $e) {
+            // A missing cache table must not block the directory.
+        }
+
+        $data = $this->fetchPsgc($url);
+
+        try {
+            Cache::put($key, $data, now()->addDays(30));
+        } catch (\Throwable $e) {
+        }
+
+        return $data;
+    }
+
+    private function fetchPsgc(string $url): array
+    {
+        $response = $this->psgcHttpGet($url);
+        if ($response->status() === 404) {
+            return [];
+        }
+        if (!$response->successful()) {
+            throw new \RuntimeException('PSGC returned HTTP '.$response->status());
+        }
+
+        $json = $response->json();
+        if (!is_array($json)) {
+            return [];
+        }
+        if (isset($json['code'])) {
+            return [$json];
+        }
+
+        return $json;
+    }
+
+    private function psgcHttpGet(string $url)
+    {
+        $send = function (bool $verify) use ($url) {
+            return Http::withOptions(['verify' => $verify])
+                ->connectTimeout(8)
+                ->timeout(25)
+                ->acceptJson()
+                ->withHeaders(['User-Agent' => 'TDRMS-Assessor/1.0'])
+                ->get($url);
+        };
+
+        try {
+            return $send(true);
+        } catch (\Throwable $e) {
+            $message = $e->getMessage();
+            $ssl = str_contains($message, 'SSL')
+                || str_contains($message, 'certificate')
+                || str_contains($message, 'cURL error 60');
+            if (!$ssl) {
+                throw $e;
+            }
+
+            return $send(false);
+        }
+    }
+
+    private function psgcRows(array $rows): array
+    {
+        $out = [];
+        foreach ($rows as $row) {
+            if (!is_array($row) || empty($row['code']) || empty($row['name'])) {
+                continue;
+            }
+            $name = (string) $row['name'];
+            if (!empty($row['regionName']) && $row['regionName'] !== $name) {
+                $name = $row['regionName'].' ('.$name.')';
+            }
+            $out[] = [
+                'psgc_id' => (string) $row['code'],
+                'name' => $name,
+            ];
+        }
+        usort($out, fn ($a, $b) => strcasecmp($a['name'], $b['name']));
+
+        return $out;
+    }
+
+    private function psgcResponse(array $rows)
+    {
+        return response()->json(array_values($rows))->header('Cache-Control', 'no-store');
+    }
+
+    private function psgcError(\Throwable $e)
+    {
+        report($e);
+
+        return response()->json([
+            'message' => 'Could not load the PSGC directory from this server. Allow outbound HTTPS to psgc.gitlab.io, then try again.',
+        ], 502)->header('Cache-Control', 'no-store');
     }
 
     /**
@@ -158,7 +299,7 @@ class SettingsController extends Controller
 
         try {
             $geoResponse = Http::withHeaders([
-                'User-Agent' => 'TDMS-Assessor/1.0',
+                'User-Agent' => 'TDRMS-Assessor/1.0',
             ])->timeout(8)->get('https://nominatim.openstreetmap.org/search', [
                 'q'      => $searchStr,
                 'format' => 'json',

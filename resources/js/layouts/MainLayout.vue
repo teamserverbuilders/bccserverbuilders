@@ -8,7 +8,7 @@
             <Navbar :collapsed="collapsed" @toggle="collapsed = !collapsed" />
 
             <main class="flex-1 overflow-y-auto">
-                <div :class="route.meta.fullBleed ? 'p-3 md:p-4 w-full h-full' : 'p-4 md:p-6 w-full'">
+                <div :class="route.meta.fullBleed ? 'p-3 md:p-4 w-full h-full min-h-0 overflow-hidden' : 'p-4 md:p-6 w-full'">
                     <RouterView v-slot="{ Component }">
                         <Transition name="fade" mode="out-in">
                             <component :is="Component" :key="$route.fullPath" />

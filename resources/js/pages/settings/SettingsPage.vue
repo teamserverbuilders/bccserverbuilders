@@ -148,7 +148,10 @@ async function loadPsgcRegions() {
     loadingRegions.value = true;
     try {
         const { data } = await axios.get('/settings/psgc/regions');
-        psgcRegions.value = data;
+        psgcRegions.value = Array.isArray(data) ? data : [];
+    } catch (err) {
+        psgcRegions.value = [];
+        toast.add({ severity: 'error', summary: 'PSGC', detail: err.response?.data?.message || 'Could not load regions.' });
     } finally { loadingRegions.value = false; }
 }
 
@@ -163,7 +166,10 @@ async function onRegionChange() {
     loadingProvinces.value = true;
     try {
         const { data } = await axios.get('/settings/psgc/provinces', { params: { region_id: psgcRegion.value } });
-        psgcProvinces.value = data;
+        psgcProvinces.value = Array.isArray(data) ? data : [];
+    } catch (err) {
+        psgcProvinces.value = [];
+        toast.add({ severity: 'error', summary: 'PSGC', detail: err.response?.data?.message || 'Could not load provinces.' });
     } finally { loadingProvinces.value = false; }
 }
 
@@ -176,7 +182,10 @@ async function onProvinceChange() {
     loadingCities.value = true;
     try {
         const { data } = await axios.get('/settings/psgc/municipalities', { params: { province_id: psgcProvince.value } });
-        psgcCities.value = data;
+        psgcCities.value = Array.isArray(data) ? data : [];
+    } catch (err) {
+        psgcCities.value = [];
+        toast.add({ severity: 'error', summary: 'PSGC', detail: err.response?.data?.message || 'Could not load cities.' });
     } finally { loadingCities.value = false; }
 }
 
@@ -187,7 +196,10 @@ async function onCityChange() {
     loadingBrgys.value = true;
     try {
         const { data } = await axios.get('/settings/psgc/barangays', { params: { city_id: psgcCity.value } });
-        psgcBarangayList.value = data;
+        psgcBarangayList.value = Array.isArray(data) ? data : [];
+    } catch (err) {
+        psgcBarangayList.value = [];
+        toast.add({ severity: 'error', summary: 'PSGC', detail: err.response?.data?.message || 'Could not load barangays.' });
     } finally { loadingBrgys.value = false; }
 }
 

@@ -17,7 +17,7 @@
                         <td class="border border-slate-300 dark:border-slate-600 p-0 w-1/2">
                             <div class="flex items-stretch">
                                 <span class="px-3 py-2 font-medium bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600 whitespace-nowrap w-36">A.R.P. No.</span>
-                                <InputText v-model="identity.arp_no" class="!w-full !border-0 !rounded-none !shadow-none" />
+                                <InputText :modelValue="identity.arp_no" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" @update:modelValue="identity.arp_no = digitsOnly($event)" />
                             </div>
                         </td>
                     </tr>
@@ -31,7 +31,7 @@
                         <td class="border border-slate-300 dark:border-slate-600 p-0">
                             <div class="flex items-stretch">
                                 <span class="px-3 py-2 font-medium bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600 whitespace-nowrap w-36">OCT/TCT/KOT No.</span>
-                                <InputText v-model="identity.oct_tct_kot_no" class="!w-full !border-0 !rounded-none !shadow-none" />
+                                <InputText :modelValue="identity.oct_tct_kot_no" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" @update:modelValue="identity.oct_tct_kot_no = digitsOnly($event)" />
                             </div>
                         </td>
                     </tr>
@@ -39,13 +39,13 @@
                         <td class="border border-slate-300 dark:border-slate-600 p-0">
                             <div class="flex items-stretch">
                                 <span class="px-3 py-2 font-medium bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600 whitespace-nowrap w-36">Survey No.</span>
-                                <InputText v-model="identity.survey_no" class="!w-full !border-0 !rounded-none !shadow-none" />
+                                <InputText :modelValue="identity.survey_no" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" @update:modelValue="identity.survey_no = digitsOnly($event)" />
                             </div>
                         </td>
                         <td class="border border-slate-300 dark:border-slate-600 p-0">
                             <div class="flex items-stretch">
                                 <span class="px-3 py-2 font-medium bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600 whitespace-nowrap w-36">Cad/PLS Lot No.</span>
-                                <InputText v-model="identity.cad_pls_lot_no" class="!w-full !border-0 !rounded-none !shadow-none" />
+                                <InputText :modelValue="identity.cad_pls_lot_no" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" @update:modelValue="identity.cad_pls_lot_no = digitsOnly($event)" />
                             </div>
                         </td>
                     </tr>
@@ -70,7 +70,7 @@
                                     <span class="px-2 py-2 text-xs font-medium bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600 whitespace-nowrap">T.I.N.</span>
                                     <InputText v-model="identity.owner_tin" class="!w-full !border-0 !rounded-none !shadow-none" />
                                     <span class="px-2 py-2 text-xs font-medium bg-slate-50 dark:bg-slate-800 border-x border-slate-300 dark:border-slate-600 whitespace-nowrap">Tel No.</span>
-                                    <InputText v-model="identity.owner_telephone" class="!w-full !border-0 !rounded-none !shadow-none" />
+                                    <InputText :modelValue="identity.owner_telephone" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" @update:modelValue="identity.owner_telephone = digitsOnly($event)" />
                                 </div>
                             </div>
                         </td>
@@ -88,7 +88,7 @@
                                     <span class="px-2 py-2 text-xs font-medium bg-slate-50 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-600 whitespace-nowrap">T.I.N.</span>
                                     <InputText v-model="identity.administrator_tin" class="!w-full !border-0 !rounded-none !shadow-none" />
                                     <span class="px-2 py-2 text-xs font-medium bg-slate-50 dark:bg-slate-800 border-x border-slate-300 dark:border-slate-600 whitespace-nowrap">Tel No.</span>
-                                    <InputText v-model="identity.administrator_telephone" class="!w-full !border-0 !rounded-none !shadow-none" />
+                                    <InputText :modelValue="identity.administrator_telephone" inputmode="numeric" class="!w-full !border-0 !rounded-none !shadow-none" @update:modelValue="identity.administrator_telephone = digitsOnly($event)" />
                                 </div>
                             </div>
                         </td>
@@ -360,7 +360,7 @@
                     </div>
                     <div>
                         <label class="form-label">CTC No.</label>
-                        <InputText v-model="conforme.ctc_no" class="w-full" />
+                        <InputText :modelValue="conforme.ctc_no" inputmode="numeric" class="w-full" @update:modelValue="conforme.ctc_no = digitsOnly($event)" />
                     </div>
                     <div>
                         <label class="form-label">Dated</label>
@@ -451,7 +451,14 @@
                 <tbody>
                     <tr v-for="row in referenceRows" :key="'f2-ref-' + row.key">
                         <td class="border border-slate-300 dark:border-slate-600 px-2 py-1.5 font-medium whitespace-nowrap">{{ row.label }}</td>
-                        <td class="border border-slate-300 dark:border-slate-600 p-0"><InputText v-model="references[row.key]" class="cell-input" /></td>
+                        <td class="border border-slate-300 dark:border-slate-600 p-0">
+                            <InputText
+                                :modelValue="references[row.key]"
+                                class="cell-input"
+                                :inputmode="numberOnlyLabel(row.label) ? 'numeric' : 'text'"
+                                @update:modelValue="references[row.key] = numberOnlyLabel(row.label) ? digitsOnly($event) : $event"
+                            />
+                        </td>
                         <td class="border border-slate-300 dark:border-slate-600 p-0"><DatePicker v-model="posting[row.key].date" class="w-full" dateFormat="mm/dd/yy" showIcon inputClass="!border-0 !rounded-none !shadow-none !text-xs" /></td>
                         <td class="border border-slate-300 dark:border-slate-600 p-0"><InputText v-model="posting[row.key].clerk_initial" class="cell-input text-center" /></td>
                         <td class="border border-slate-300 dark:border-slate-600 p-0"><InputText v-model="posting[row.key].post_inspection" class="cell-input" /></td>
@@ -476,6 +483,7 @@ import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
 import Textarea from 'primevue/textarea';
 import DatePicker from 'primevue/datepicker';
+import { digitsOnly, numberOnlyLabel } from '@/utils/digitsOnly';
 
 const remarks = defineModel('remarks', { type: String, default: '' });
 
