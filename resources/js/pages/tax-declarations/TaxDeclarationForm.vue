@@ -495,7 +495,7 @@
                         </table>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400 px-1 py-1.5">
                             These fields are for the printed TD form. After saving, use
-                            <span class="font-medium">Transfer Ownership</span> on the declaration view to record ownership history when the property changes hands.
+                            <span class="font-medium">Transaction</span> on the linked field appraisal to record ownership history when the property changes hands.
                         </p>
 
                         <!-- Memoranda -->

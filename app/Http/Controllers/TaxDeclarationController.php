@@ -122,6 +122,7 @@ class TaxDeclarationController extends Controller
         }
 
         $request->validate([
+            'transaction_code' => 'required|string|max:32|unique:tax_declaration_ownership_histories,transaction_code',
             'new_td_number' => 'required|string|max:255|unique:tax_declarations,td_number',
             'new_arp_number' => 'nullable|string|max:255',
             'owner_id' => 'nullable|exists:property_owners,id',
@@ -142,7 +143,8 @@ class TaxDeclarationController extends Controller
         }
 
         try {
-            $newTd = DB::transaction(function () use ($request, $taxDeclaration) {
+            $issuedCode = null;
+            $newTd = DB::transaction(function () use ($request, $taxDeclaration, &$issuedCode) {
                 $oldData = $taxDeclaration->toArray();
                 $currentOwner = $taxDeclaration->owner;
 
@@ -166,6 +168,8 @@ class TaxDeclarationController extends Controller
                 }
 
                 $transferDate = $request->date('transfer_date');
+                $transactionCode = trim((string) $request->transaction_code);
+                $issuedCode = $transactionCode;
 
                 // Snapshot the outgoing (current) owner from the old TD
                 $snapshotName = $currentOwner?->owner_name
@@ -218,6 +222,7 @@ class TaxDeclarationController extends Controller
                 // 2) Ownership history entry on the OLD TD (points to the new TD)
                 OwnershipHistory::create([
                     'tax_declaration_id'     => $taxDeclaration->id,
+                    'transaction_code'       => $transactionCode,
                     'new_tax_declaration_id' => $newTd->id,
                     'new_td_number'          => $newTd->td_number,
                     'new_arp_number'         => $newTd->arp_number,
@@ -273,6 +278,7 @@ class TaxDeclarationController extends Controller
 
             return response()->json([
                 'message' => 'Ownership transferred. New TD issued.',
+                'transaction_code' => $issuedCode,
                 'new_tax_declaration' => $newTd,
                 'new_tax_declaration_id' => $newTd->id,
             ]);

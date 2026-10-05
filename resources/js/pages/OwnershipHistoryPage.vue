@@ -69,9 +69,15 @@
                     <div class="text-center py-14 text-gray-400">
                         <i class="pi pi-history text-4xl mb-3 block opacity-40"></i>
                         <p class="text-sm font-medium text-gray-500">No ownership transfers yet</p>
-                        <p class="text-xs mt-1">Transfers appear here after you use Transfer Ownership on a tax declaration.</p>
+                        <p class="text-xs mt-1">Transfers appear here after you use Transaction on a field appraisal.</p>
                     </div>
                 </template>
+
+                <Column header="Transaction code" style="min-width: 140px">
+                    <template #body="{ data }">
+                        <span class="font-mono text-sm text-[#1a3557] dark:text-blue-300">{{ data.transaction_code || '—' }}</span>
+                    </template>
+                </Column>
 
                 <Column header="Transfer date" style="min-width: 120px" sortable>
                     <template #body="{ data }">
@@ -215,6 +221,10 @@
                 </div>
 
                 <div class="p-5 grid grid-cols-2 gap-4 text-sm">
+                    <div class="col-span-2">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Transaction code</p>
+                        <p class="font-mono text-gray-800 dark:text-white mt-0.5">{{ detail.transaction_code || '—' }}</p>
+                    </div>
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Transfer date</p>
                         <p class="text-gray-800 dark:text-white mt-0.5">{{ formatDate(detail.transfer_date) }}</p>

@@ -153,6 +153,7 @@ const routeTitles = {
     'td-edit': 'Edit Declaration', 'td-pdf': 'Export PDF', workflow: 'Workflow Management',
     'field-appraisals': 'Field Appraisals', 'fa-create': 'New Field Appraisal',
     'fa-show': 'Appraisal Details', 'fa-edit': 'Edit Appraisal', 'fa-pdf': 'Export PDF',
+    'fa-transaction': 'Transaction',
     'property-owners': 'Property Owners', properties: 'Property Owners',
     'property-improvements': 'Property Improvements',
     'property-locations': 'Property Locations',

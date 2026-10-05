@@ -2,7 +2,7 @@
     <div class="space-y-5">
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
+                <div v-if="!embedded" class="flex items-center gap-3">
                 <RouterLink to="/field-appraisals">
                     <button class="h-8 w-8 inline-flex items-center justify-center rounded-md border border-[#1a3557] text-[#1a3557] hover:bg-[#1a3557] hover:text-white transition-colors">
                         <i class="pi pi-arrow-left text-sm"></i>
@@ -914,6 +914,10 @@ import FieldAppraisalForm2Sheet from '@/pages/field-appraisals/FieldAppraisalFor
 import axios from 'axios';
 import { findOcrTextIssues } from '@/utils/ocrSpellcheck';
 import { digitsOnly, numberOnlyLabel } from '@/utils/digitsOnly';
+
+const props = defineProps({
+    embedded: { type: Boolean, default: false },
+});
 
 const route  = useRoute();
 const router = useRouter();
@@ -2297,6 +2301,7 @@ async function handleSubmit() {
         if (isEdit.value) {
             await axios.put(`field-appraisals/${route.params.id}`, payload);
             toast.success('Updated', 'Field appraisal updated.');
+            if (props.embedded) return;
         } else {
             const { data } = await axios.post('field-appraisals', payload);
             if (pendingSketchFile.value) {

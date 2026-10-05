@@ -67,9 +67,12 @@
                         <Tag :value="data.status" :severity="statusSeverity(data.status)" class="text-[10px]" />
                     </template>
                 </Column>
-                <Column header="" style="width:170px">
+                <Column header="" style="width:280px">
                     <template #body="{ data }">
                         <div class="flex items-center gap-1">
+                            <RouterLink :to="`/field-appraisals/${data.id}/transaction`">
+                                <Button label="Transaction" icon="pi pi-users" size="small" text v-tooltip.top="'Transaction'" />
+                            </RouterLink>
                             <RouterLink :to="`/field-appraisals/${data.id}`">
                                 <Button icon="pi pi-eye" size="small" text rounded v-tooltip.top="'View'" />
                             </RouterLink>

@@ -14,6 +14,7 @@ class OwnershipHistory extends Model
 
     protected $fillable = [
         'tax_declaration_id',
+        'transaction_code',
         'new_tax_declaration_id',
         'new_td_number',
         'new_arp_number',

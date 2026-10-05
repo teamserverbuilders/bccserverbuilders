@@ -1,6 +1,6 @@
 {
-  "_FormLayoutSheet-BYIn3nmL.js": {
-    "file": "assets/FormLayoutSheet-BYIn3nmL.js",
+  "_FormLayoutSheet-Cmpz6-C5.js": {
+    "file": "assets/FormLayoutSheet-Cmpz6-C5.js",
     "name": "FormLayoutSheet",
     "imports": [
       "_digitsOnly-CdhVN_P7.js",
@@ -15,8 +15,8 @@
     "file": "assets/FormLayoutSheet-Dk40go5G.css",
     "src": "_FormLayoutSheet-Dk40go5G.css"
   },
-  "_MiniPropertyMap-Dk2_4iPK.js": {
-    "file": "assets/MiniPropertyMap-Dk2_4iPK.js",
+  "_MiniPropertyMap-CvZqjhn3.js": {
+    "file": "assets/MiniPropertyMap-CvZqjhn3.js",
     "name": "MiniPropertyMap",
     "imports": [
       "resources/js/app.js"
@@ -25,8 +25,8 @@
       "_leaflet-src-Y4tAezky.js"
     ]
   },
-  "_TaxDeclarationSheet-CHiMRt9U.js": {
-    "file": "assets/TaxDeclarationSheet-CHiMRt9U.js",
+  "_TaxDeclarationSheet-W8AYsn15.js": {
+    "file": "assets/TaxDeclarationSheet-W8AYsn15.js",
     "name": "TaxDeclarationSheet",
     "imports": [
       "resources/js/app.js"
@@ -40,153 +40,153 @@
     "file": "assets/digitsOnly-CdhVN_P7.js",
     "name": "digitsOnly"
   },
-  "_index-B04KV4IB.js": {
-    "file": "assets/index-B04KV4IB.js",
+  "_index-4sA3joNd.js": {
+    "file": "assets/index-4sA3joNd.js",
+    "name": "index",
+    "imports": [
+      "_index-Cz4Vahw8.js",
+      "resources/js/app.js"
+    ]
+  },
+  "_index-AMplXUgq.js": {
+    "file": "assets/index-AMplXUgq.js",
     "name": "index",
     "imports": [
       "resources/js/app.js",
-      "_index-Cf33FfK3.js",
-      "_index-DY_B4JQV.js"
+      "_index-Cz4Vahw8.js"
     ]
   },
-  "_index-BjOe7OKA.js": {
-    "file": "assets/index-BjOe7OKA.js",
+  "_index-B506gJ3v.js": {
+    "file": "assets/index-B506gJ3v.js",
     "name": "index",
     "imports": [
       "resources/js/app.js",
-      "_index-CszfffkW.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-B04KV4IB.js",
-      "_index-DY_B4JQV.js"
+      "_index-Cz4Vahw8.js",
+      "_index-CyPBle1Q.js"
     ]
   },
-  "_index-BkBVfMLv.js": {
-    "file": "assets/index-BkBVfMLv.js",
+  "_index-BgOsJ--w.js": {
+    "file": "assets/index-BgOsJ--w.js",
+    "name": "index",
+    "imports": [
+      "resources/js/app.js",
+      "_index-CMrP1gjW.js",
+      "_index-UtuHTcwU.js",
+      "_index-Bp16S-yQ.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CyPBle1Q.js"
+    ]
+  },
+  "_index-Bp16S-yQ.js": {
+    "file": "assets/index-Bp16S-yQ.js",
     "name": "index",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_index-BkGjaE-S.js": {
-    "file": "assets/index-BkGjaE-S.js",
+  "_index-BuBLSpvs.js": {
+    "file": "assets/index-BuBLSpvs.js",
     "name": "index",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_index-BpQ5etDE.js": {
-    "file": "assets/index-BpQ5etDE.js",
-    "name": "index",
-    "imports": [
-      "_index-DY_B4JQV.js",
-      "resources/js/app.js"
-    ]
-  },
-  "_index-BrhUKu-j.js": {
-    "file": "assets/index-BrhUKu-j.js",
+  "_index-CGefRtc1.js": {
+    "file": "assets/index-CGefRtc1.js",
     "name": "index",
     "imports": [
       "resources/js/app.js",
-      "_index-DY_B4JQV.js",
-      "_index-mpmaqens.js"
+      "_index-UtuHTcwU.js",
+      "_index-Bp16S-yQ.js"
     ]
   },
-  "_index-BvwqYF5k.js": {
-    "file": "assets/index-BvwqYF5k.js",
+  "_index-CMrP1gjW.js": {
+    "file": "assets/index-CMrP1gjW.js",
     "name": "index",
     "imports": [
       "resources/js/app.js",
-      "_index-DY_B4JQV.js"
+      "_index-ClgCejD9.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CyPBle1Q.js"
     ]
   },
-  "_index-Cf33FfK3.js": {
-    "file": "assets/index-Cf33FfK3.js",
+  "_index-ClgCejD9.js": {
+    "file": "assets/index-ClgCejD9.js",
     "name": "index",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_index-CkPjWPJZ.js": {
-    "file": "assets/index-CkPjWPJZ.js",
+  "_index-CpE3K1ix.js": {
+    "file": "assets/index-CpE3K1ix.js",
+    "name": "index",
+    "imports": [
+      "resources/js/app.js",
+      "_index-ClgCejD9.js",
+      "_index-Cz4Vahw8.js"
+    ]
+  },
+  "_index-CyPBle1Q.js": {
+    "file": "assets/index-CyPBle1Q.js",
     "name": "index",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_index-CszfffkW.js": {
-    "file": "assets/index-CszfffkW.js",
-    "name": "index",
-    "imports": [
-      "resources/js/app.js",
-      "_index-Cf33FfK3.js",
-      "_index-DY_B4JQV.js",
-      "_index-mpmaqens.js"
-    ]
-  },
-  "_index-DB5HmtoA.js": {
-    "file": "assets/index-DB5HmtoA.js",
-    "name": "index",
-    "imports": [
-      "resources/js/app.js",
-      "_index-CkPjWPJZ.js",
-      "_index-BkBVfMLv.js"
-    ]
-  },
-  "_index-DFm-DrSW.js": {
-    "file": "assets/index-DFm-DrSW.js",
+  "_index-Cz4Vahw8.js": {
+    "file": "assets/index-Cz4Vahw8.js",
     "name": "index",
     "imports": [
       "resources/js/app.js"
     ]
   },
-  "_index-DG7ViP5A.js": {
-    "file": "assets/index-DG7ViP5A.js",
-    "name": "index",
-    "imports": [
-      "resources/js/app.js",
-      "_index-CszfffkW.js",
-      "_index-CkPjWPJZ.js",
-      "_index-BkBVfMLv.js",
-      "_index-DY_B4JQV.js",
-      "_index-mpmaqens.js"
-    ]
-  },
-  "_index-DY_B4JQV.js": {
-    "file": "assets/index-DY_B4JQV.js",
+  "_index-D9x8wnye.js": {
+    "file": "assets/index-D9x8wnye.js",
     "name": "index",
     "imports": [
       "resources/js/app.js"
+    ]
+  },
+  "_index-DYkdnFWb.js": {
+    "file": "assets/index-DYkdnFWb.js",
+    "name": "index",
+    "imports": [
+      "resources/js/app.js",
+      "_index-CMrP1gjW.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-CpE3K1ix.js",
+      "_index-Cz4Vahw8.js"
     ]
   },
   "_index-DvFzRuLR.js": {
     "file": "assets/index-DvFzRuLR.js",
     "name": "index"
   },
-  "_index-m4E8a2lC.js": {
-    "file": "assets/index-m4E8a2lC.js",
+  "_index-UtuHTcwU.js": {
+    "file": "assets/index-UtuHTcwU.js",
+    "name": "index",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_index-VcvqV7Lz.js": {
+    "file": "assets/index-VcvqV7Lz.js",
+    "name": "index",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "_index-ZJbXDmpS.js": {
+    "file": "assets/index-ZJbXDmpS.js",
     "name": "index",
     "imports": [
       "resources/js/app.js",
-      "_index-CszfffkW.js",
-      "_index-DY_B4JQV.js",
-      "_index-mpmaqens.js"
-    ]
-  },
-  "_index-mpmaqens.js": {
-    "file": "assets/index-mpmaqens.js",
-    "name": "index",
-    "imports": [
-      "resources/js/app.js"
-    ]
-  },
-  "_index-otGy2ViN.js": {
-    "file": "assets/index-otGy2ViN.js",
-    "name": "index",
-    "imports": [
-      "resources/js/app.js"
+      "_index-CMrP1gjW.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CyPBle1Q.js"
     ]
   },
   "_leaflet-src-Y4tAezky.js": {
@@ -198,8 +198,8 @@
     "file": "assets/ocrSpellcheck-CzZaiOrv.js",
     "name": "ocrSpellcheck"
   },
-  "_useToast-BfGw_FbG.js": {
-    "file": "assets/useToast-BfGw_FbG.js",
+  "_useToast-B8eRrN5i.js": {
+    "file": "assets/useToast-B8eRrN5i.js",
     "name": "useToast",
     "imports": [
       "resources/js/app.js"
@@ -254,7 +254,7 @@
     "src": "node_modules/primeicons/fonts/primeicons.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-CorIWWmf.css",
+    "file": "assets/app-DVM2ygCq.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -263,7 +263,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-DYA4tTA5.js",
+    "file": "assets/app-u4UyB80i.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -283,6 +283,7 @@
       "resources/js/pages/field-appraisals/FieldAppraisalForm.vue",
       "resources/js/pages/field-appraisals/FieldAppraisalPdf.vue",
       "resources/js/pages/field-appraisals/FieldAppraisalForm.vue",
+      "resources/js/pages/field-appraisals/FieldAppraisalTransaction.vue",
       "resources/js/pages/field-appraisals/FieldAppraisalView.vue",
       "resources/js/pages/properties/PropertyIndex.vue",
       "resources/js/pages/properties/PropertyView.vue",
@@ -313,7 +314,7 @@
     ]
   },
   "resources/js/layouts/MainLayout.vue": {
-    "file": "assets/MainLayout-CnQKnl-R.js",
+    "file": "assets/MainLayout-9wy0m0-c.js",
     "name": "MainLayout",
     "src": "resources/js/layouts/MainLayout.vue",
     "isDynamicEntry": true,
@@ -322,103 +323,103 @@
       "__plugin-vue_export-helper-DlAUqK2U.js"
     ],
     "css": [
-      "assets/MainLayout-D5WGhnzK.css"
+      "assets/MainLayout-B2SDbfwT.css"
     ]
   },
   "resources/js/pages/ArchivePage.vue": {
-    "file": "assets/ArchivePage-CKBCHeRT.js",
+    "file": "assets/ArchivePage-Dq6ojrd8.js",
     "name": "ArchivePage",
     "src": "resources/js/pages/ArchivePage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-BjOe7OKA.js",
-      "_index-CszfffkW.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-B04KV4IB.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-DYkdnFWb.js",
+      "_index-CMrP1gjW.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-CpE3K1ix.js"
     ]
   },
   "resources/js/pages/AuditPage.vue": {
-    "file": "assets/AuditPage-BQ6HM2VT.js",
+    "file": "assets/AuditPage-DYMasLK_.js",
     "name": "AuditPage",
     "src": "resources/js/pages/AuditPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_index-DY_B4JQV.js",
-      "_index-DG7ViP5A.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-DB5HmtoA.js",
-      "_index-CszfffkW.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-CkPjWPJZ.js",
-      "_index-BkBVfMLv.js",
-      "_index-BvwqYF5k.js",
-      "_index-B04KV4IB.js"
+      "_index-Cz4Vahw8.js",
+      "_index-BgOsJ--w.js",
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-CGefRtc1.js",
+      "_index-CMrP1gjW.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-UtuHTcwU.js",
+      "_index-Bp16S-yQ.js",
+      "_index-AMplXUgq.js",
+      "_index-CpE3K1ix.js"
     ]
   },
   "resources/js/pages/DashboardPage.vue": {
-    "file": "assets/DashboardPage-CvMSzjWm.js",
+    "file": "assets/DashboardPage-xb8rSN31.js",
     "name": "DashboardPage",
     "src": "resources/js/pages/DashboardPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_index-CszfffkW.js",
-      "_index-DG7ViP5A.js",
+      "_index-CMrP1gjW.js",
+      "_index-BgOsJ--w.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
-      "_index-Cf33FfK3.js",
-      "_index-DY_B4JQV.js",
-      "_index-mpmaqens.js",
-      "_index-CkPjWPJZ.js",
-      "_index-BkBVfMLv.js"
+      "_index-ClgCejD9.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CyPBle1Q.js",
+      "_index-UtuHTcwU.js",
+      "_index-Bp16S-yQ.js"
     ],
     "css": [
       "assets/DashboardPage-DzbY5lMw.css"
     ]
   },
   "resources/js/pages/DocumentsPage.vue": {
-    "file": "assets/DocumentsPage-B8AXyPFh.js",
+    "file": "assets/DocumentsPage-B7spn1iH.js",
     "name": "DocumentsPage",
     "src": "resources/js/pages/DocumentsPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-CszfffkW.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-B04KV4IB.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CMrP1gjW.js",
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-CpE3K1ix.js"
     ]
   },
   "resources/js/pages/GisMapPage.vue": {
-    "file": "assets/GisMapPage-BooOsqwZ.js",
+    "file": "assets/GisMapPage-CjXqzLKp.js",
     "name": "GisMapPage",
     "src": "resources/js/pages/GisMapPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_index-DY_B4JQV.js",
-      "_index-CszfffkW.js",
-      "_index-otGy2ViN.js",
-      "_index-m4E8a2lC.js",
-      "_index-DFm-DrSW.js",
-      "_useToast-BfGw_FbG.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CMrP1gjW.js",
+      "_index-D9x8wnye.js",
+      "_index-ZJbXDmpS.js",
+      "_index-VcvqV7Lz.js",
+      "_useToast-B8eRrN5i.js",
       "_index-DvFzRuLR.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js"
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js"
     ],
     "dynamicImports": [
       "_leaflet-src-Y4tAezky.js"
@@ -428,20 +429,20 @@
     ]
   },
   "resources/js/pages/LandMapPage.vue": {
-    "file": "assets/LandMapPage-U3NKFEaD.js",
+    "file": "assets/LandMapPage-CcdtR2bQ.js",
     "name": "LandMapPage",
     "src": "resources/js/pages/LandMapPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_index-CszfffkW.js",
+      "_index-CMrP1gjW.js",
       "_leaflet-src-Y4tAezky.js",
-      "_index-DY_B4JQV.js",
-      "_useToast-BfGw_FbG.js",
+      "_index-Cz4Vahw8.js",
+      "_useToast-B8eRrN5i.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
       "_index-DvFzRuLR.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js"
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js"
     ],
     "css": [
       "assets/LandMapPage-_uPCULys.css",
@@ -457,7 +458,7 @@
     ]
   },
   "resources/js/pages/NotFoundPage.vue": {
-    "file": "assets/NotFoundPage-Bg2h_MlV.js",
+    "file": "assets/NotFoundPage-6RgaNiec.js",
     "name": "NotFoundPage",
     "src": "resources/js/pages/NotFoundPage.vue",
     "isDynamicEntry": true,
@@ -466,120 +467,120 @@
     ]
   },
   "resources/js/pages/OwnershipHistoryPage.vue": {
-    "file": "assets/OwnershipHistoryPage-DLMX1GDY.js",
+    "file": "assets/OwnershipHistoryPage-DuUxyX7-.js",
     "name": "OwnershipHistoryPage",
     "src": "resources/js/pages/OwnershipHistoryPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-DG7ViP5A.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-DFm-DrSW.js",
-      "_index-CszfffkW.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-CkPjWPJZ.js",
-      "_index-BkBVfMLv.js",
-      "_index-BvwqYF5k.js",
-      "_index-B04KV4IB.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-BgOsJ--w.js",
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-VcvqV7Lz.js",
+      "_index-CMrP1gjW.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-UtuHTcwU.js",
+      "_index-Bp16S-yQ.js",
+      "_index-AMplXUgq.js",
+      "_index-CpE3K1ix.js"
     ]
   },
   "resources/js/pages/ProfilePage.vue": {
-    "file": "assets/ProfilePage-NWcNphSa.js",
+    "file": "assets/ProfilePage-BU4QvULk.js",
     "name": "ProfilePage",
     "src": "resources/js/pages/ProfilePage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-BrhUKu-j.js",
-      "_index-otGy2ViN.js",
-      "_index-BkGjaE-S.js",
-      "_index-BjOe7OKA.js",
-      "_index-mpmaqens.js",
-      "_index-CszfffkW.js",
-      "_index-Cf33FfK3.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-B04KV4IB.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-B506gJ3v.js",
+      "_index-D9x8wnye.js",
+      "_index-BuBLSpvs.js",
+      "_index-DYkdnFWb.js",
+      "_index-CyPBle1Q.js",
+      "_index-CMrP1gjW.js",
+      "_index-ClgCejD9.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-CpE3K1ix.js"
     ]
   },
   "resources/js/pages/PropertyImprovementsPage.vue": {
-    "file": "assets/PropertyImprovementsPage-C4Ag5vQf.js",
+    "file": "assets/PropertyImprovementsPage-DQyrMZdF.js",
     "name": "PropertyImprovementsPage",
     "src": "resources/js/pages/PropertyImprovementsPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-BpQ5etDE.js",
-      "_index-CszfffkW.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-B04KV4IB.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-4sA3joNd.js",
+      "_index-CMrP1gjW.js",
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-CpE3K1ix.js"
     ]
   },
   "resources/js/pages/PropertyLocationsPage.vue": {
-    "file": "assets/PropertyLocationsPage-CKOKHlbt.js",
+    "file": "assets/PropertyLocationsPage-CfDrBZba.js",
     "name": "PropertyLocationsPage",
     "src": "resources/js/pages/PropertyLocationsPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-CszfffkW.js",
-      "_index-BjOe7OKA.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-B04KV4IB.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CMrP1gjW.js",
+      "_index-DYkdnFWb.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-CpE3K1ix.js"
     ]
   },
   "resources/js/pages/QrVerifyPage.vue": {
-    "file": "assets/QrVerifyPage-B23K0tHX.js",
+    "file": "assets/QrVerifyPage-DsMaWADJ.js",
     "name": "QrVerifyPage",
     "src": "resources/js/pages/QrVerifyPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_index-otGy2ViN.js",
-      "_index-DFm-DrSW.js"
+      "_index-D9x8wnye.js",
+      "_index-VcvqV7Lz.js"
     ]
   },
   "resources/js/pages/ReportsPage.vue": {
-    "file": "assets/ReportsPage-BnLwn68r.js",
+    "file": "assets/ReportsPage-SutdGTN_.js",
     "name": "ReportsPage",
     "src": "resources/js/pages/ReportsPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_index-CszfffkW.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-DB5HmtoA.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-Cf33FfK3.js",
-      "_index-DY_B4JQV.js",
-      "_index-mpmaqens.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-B04KV4IB.js",
-      "_index-CkPjWPJZ.js"
+      "_index-CMrP1gjW.js",
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-CGefRtc1.js",
+      "_useToast-B8eRrN5i.js",
+      "_index-ClgCejD9.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CyPBle1Q.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-CpE3K1ix.js",
+      "_index-UtuHTcwU.js"
     ]
   },
   "resources/js/pages/SearchPage.vue": {
-    "file": "assets/SearchPage-CSdW0H6c.js",
+    "file": "assets/SearchPage-CfzLp-7e.js",
     "name": "SearchPage",
     "src": "resources/js/pages/SearchPage.vue",
     "isDynamicEntry": true,
@@ -588,153 +589,179 @@
     ]
   },
   "resources/js/pages/WorkflowPage.vue": {
-    "file": "assets/WorkflowPage-CFqqcKMq.js",
+    "file": "assets/WorkflowPage-SY6zEkHb.js",
     "name": "WorkflowPage",
     "src": "resources/js/pages/WorkflowPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-DY_B4JQV.js",
-      "_index-CszfffkW.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-B04KV4IB.js"
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CMrP1gjW.js",
+      "_useToast-B8eRrN5i.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-CpE3K1ix.js"
     ]
   },
   "resources/js/pages/auth/ForgotPasswordPage.vue": {
-    "file": "assets/ForgotPasswordPage-DCtrejwa.js",
+    "file": "assets/ForgotPasswordPage-DLck1NfU.js",
     "name": "ForgotPasswordPage",
     "src": "resources/js/pages/auth/ForgotPasswordPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_index-DY_B4JQV.js",
-      "_index-BrhUKu-j.js",
+      "_index-Cz4Vahw8.js",
+      "_index-B506gJ3v.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
-      "_index-mpmaqens.js"
+      "_index-CyPBle1Q.js"
     ],
     "css": [
       "assets/ForgotPasswordPage-BWrWPmDy.css"
     ]
   },
   "resources/js/pages/auth/LoginPage.vue": {
-    "file": "assets/LoginPage-BHAxTQsn.js",
+    "file": "assets/LoginPage-D8FqzIYE.js",
     "name": "LoginPage",
     "src": "resources/js/pages/auth/LoginPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_index-DY_B4JQV.js",
-      "_index-BrhUKu-j.js",
-      "_index-B04KV4IB.js",
-      "_index-BkGjaE-S.js",
+      "_index-Cz4Vahw8.js",
+      "_index-B506gJ3v.js",
+      "_index-CpE3K1ix.js",
+      "_index-BuBLSpvs.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
-      "_index-mpmaqens.js",
-      "_index-Cf33FfK3.js"
+      "_index-CyPBle1Q.js",
+      "_index-ClgCejD9.js"
     ],
     "css": [
       "assets/LoginPage-AfAIQy14.css"
     ]
   },
   "resources/js/pages/field-appraisals/FieldAppraisalForm.vue": {
-    "file": "assets/FieldAppraisalForm-BpQrwtjH.js",
+    "file": "assets/FieldAppraisalForm-CMv1FybT.js",
     "name": "FieldAppraisalForm",
     "src": "resources/js/pages/field-appraisals/FieldAppraisalForm.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-BvwqYF5k.js",
-      "_index-CszfffkW.js",
-      "_index-BpQ5etDE.js",
-      "_index-DG7ViP5A.js",
-      "_index-m4E8a2lC.js",
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-AMplXUgq.js",
+      "_index-CMrP1gjW.js",
+      "_index-4sA3joNd.js",
+      "_index-BgOsJ--w.js",
+      "_index-ZJbXDmpS.js",
       "_digitsOnly-CdhVN_P7.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
       "_ocrSpellcheck-CzZaiOrv.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-CkPjWPJZ.js",
-      "_index-BkBVfMLv.js"
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-UtuHTcwU.js",
+      "_index-Bp16S-yQ.js"
     ],
     "css": [
-      "assets/FieldAppraisalForm-Dxwn68cP.css"
+      "assets/FieldAppraisalForm-C6zw5gqI.css"
     ]
   },
   "resources/js/pages/field-appraisals/FieldAppraisalIndex.vue": {
-    "file": "assets/FieldAppraisalIndex-CgbiBUOA.js",
+    "file": "assets/FieldAppraisalIndex-CsOJatUi.js",
     "name": "FieldAppraisalIndex",
     "src": "resources/js/pages/field-appraisals/FieldAppraisalIndex.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-CszfffkW.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-B04KV4IB.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CMrP1gjW.js",
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-CpE3K1ix.js"
     ]
   },
   "resources/js/pages/field-appraisals/FieldAppraisalPdf.vue": {
-    "file": "assets/FieldAppraisalPdf-CLJ4H77B.js",
+    "file": "assets/FieldAppraisalPdf-D0C43pl0.js",
     "name": "FieldAppraisalPdf",
     "src": "resources/js/pages/field-appraisals/FieldAppraisalPdf.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js"
+      "_useToast-B8eRrN5i.js"
+    ]
+  },
+  "resources/js/pages/field-appraisals/FieldAppraisalTransaction.vue": {
+    "file": "assets/FieldAppraisalTransaction-BTOkoGE7.js",
+    "name": "FieldAppraisalTransaction",
+    "src": "resources/js/pages/field-appraisals/FieldAppraisalTransaction.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_useToast-B8eRrN5i.js",
+      "_index-D9x8wnye.js",
+      "_index-Cz4Vahw8.js",
+      "_index-4sA3joNd.js",
+      "_index-ZJbXDmpS.js",
+      "_index-BgOsJ--w.js",
+      "_index-VcvqV7Lz.js",
+      "resources/js/pages/field-appraisals/FieldAppraisalForm.vue",
+      "_index-CMrP1gjW.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-UtuHTcwU.js",
+      "_index-Bp16S-yQ.js",
+      "_index-AMplXUgq.js",
+      "_digitsOnly-CdhVN_P7.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js",
+      "_ocrSpellcheck-CzZaiOrv.js"
     ]
   },
   "resources/js/pages/field-appraisals/FieldAppraisalView.vue": {
-    "file": "assets/FieldAppraisalView-C8nkIUNC.js",
+    "file": "assets/FieldAppraisalView-B614qc4a.js",
     "name": "FieldAppraisalView",
     "src": "resources/js/pages/field-appraisals/FieldAppraisalView.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-otGy2ViN.js",
-      "_MiniPropertyMap-Dk2_4iPK.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-D9x8wnye.js",
+      "_MiniPropertyMap-CvZqjhn3.js"
     ]
   },
   "resources/js/pages/form-layouts/FormLayoutIndex.vue": {
-    "file": "assets/FormLayoutIndex-Dw2fuY6N.js",
+    "file": "assets/FormLayoutIndex-DICGSn1s.js",
     "name": "FormLayoutIndex",
     "src": "resources/js/pages/form-layouts/FormLayoutIndex.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-CszfffkW.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-B04KV4IB.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CMrP1gjW.js",
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-CpE3K1ix.js"
     ]
   },
   "resources/js/pages/form-layouts/FormLayoutPage.vue": {
-    "file": "assets/FormLayoutPage-DXF04kct.js",
+    "file": "assets/FormLayoutPage-DItSgwTk.js",
     "name": "FormLayoutPage",
     "src": "resources/js/pages/form-layouts/FormLayoutPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
+      "_useToast-B8eRrN5i.js",
       "__plugin-vue_export-helper-DlAUqK2U.js"
     ],
     "css": [
@@ -742,225 +769,221 @@
     ]
   },
   "resources/js/pages/form-layouts/FormLayoutView.vue": {
-    "file": "assets/FormLayoutView-CJl_59FR.js",
+    "file": "assets/FormLayoutView-DRyjtehI.js",
     "name": "FormLayoutView",
     "src": "resources/js/pages/form-layouts/FormLayoutView.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_FormLayoutSheet-BYIn3nmL.js",
+      "_useToast-B8eRrN5i.js",
+      "_FormLayoutSheet-Cmpz6-C5.js",
       "_digitsOnly-CdhVN_P7.js",
       "__plugin-vue_export-helper-DlAUqK2U.js"
     ]
   },
   "resources/js/pages/ocr/OcrIndex.vue": {
-    "file": "assets/OcrIndex-D3Z2g8-i.js",
+    "file": "assets/OcrIndex-CmT-TM-Q.js",
     "name": "OcrIndex",
     "src": "resources/js/pages/ocr/OcrIndex.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-CszfffkW.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-DY_B4JQV.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-B04KV4IB.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-CMrP1gjW.js",
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-Cz4Vahw8.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-CpE3K1ix.js"
     ],
     "css": [
       "assets/OcrIndex-YgV4EhTc.css"
     ]
   },
   "resources/js/pages/ocr/OcrReview.vue": {
-    "file": "assets/OcrReview-bwARaQeg.js",
+    "file": "assets/OcrReview-CptKskum.js",
     "name": "OcrReview",
     "src": "resources/js/pages/ocr/OcrReview.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-DFm-DrSW.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-VcvqV7Lz.js"
     ]
   },
   "resources/js/pages/properties/PropertyIndex.vue": {
-    "file": "assets/PropertyIndex-C2arHlOh.js",
+    "file": "assets/PropertyIndex-B2M7WoFE.js",
     "name": "PropertyIndex",
     "src": "resources/js/pages/properties/PropertyIndex.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-BpQ5etDE.js",
-      "_index-CszfffkW.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-B04KV4IB.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-4sA3joNd.js",
+      "_index-CMrP1gjW.js",
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-CpE3K1ix.js"
     ]
   },
   "resources/js/pages/properties/PropertyView.vue": {
-    "file": "assets/PropertyView-1fsNm093.js",
+    "file": "assets/PropertyView-BdU0USl3.js",
     "name": "PropertyView",
     "src": "resources/js/pages/properties/PropertyView.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-BpQ5etDE.js",
-      "_index-CszfffkW.js",
-      "_index-DFm-DrSW.js",
-      "_TaxDeclarationSheet-CHiMRt9U.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-4sA3joNd.js",
+      "_index-CMrP1gjW.js",
+      "_index-VcvqV7Lz.js",
+      "_TaxDeclarationSheet-W8AYsn15.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js"
     ]
   },
   "resources/js/pages/settings/SettingsPage.vue": {
-    "file": "assets/SettingsPage-BV-FpVsG.js",
+    "file": "assets/SettingsPage-DZ_PVLEW.js",
     "name": "SettingsPage",
     "src": "resources/js/pages/settings/SettingsPage.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_useToast-BfGw_FbG.js",
+      "_useToast-B8eRrN5i.js",
       "resources/js/app.js",
-      "_index-BjOe7OKA.js",
-      "_index-DB5HmtoA.js",
-      "_index-CszfffkW.js",
-      "_index-BvwqYF5k.js",
-      "_index-DY_B4JQV.js",
-      "_index-BkBVfMLv.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-B04KV4IB.js",
-      "_index-CkPjWPJZ.js"
+      "_index-DYkdnFWb.js",
+      "_index-CGefRtc1.js",
+      "_index-CMrP1gjW.js",
+      "_index-AMplXUgq.js",
+      "_index-Cz4Vahw8.js",
+      "_index-Bp16S-yQ.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-CpE3K1ix.js",
+      "_index-UtuHTcwU.js"
     ]
   },
   "resources/js/pages/tax-declarations/TaxDeclarationForm.vue": {
-    "file": "assets/TaxDeclarationForm-An1Dww1T.js",
+    "file": "assets/TaxDeclarationForm-BHXPodkH.js",
     "name": "TaxDeclarationForm",
     "src": "resources/js/pages/tax-declarations/TaxDeclarationForm.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-BvwqYF5k.js",
-      "_index-CszfffkW.js",
-      "_index-BpQ5etDE.js",
-      "_index-DG7ViP5A.js",
-      "_index-m4E8a2lC.js",
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-AMplXUgq.js",
+      "_index-CMrP1gjW.js",
+      "_index-4sA3joNd.js",
+      "_index-BgOsJ--w.js",
+      "_index-ZJbXDmpS.js",
       "_ocrSpellcheck-CzZaiOrv.js",
       "_digitsOnly-CdhVN_P7.js",
-      "_FormLayoutSheet-BYIn3nmL.js",
+      "_FormLayoutSheet-Cmpz6-C5.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-CkPjWPJZ.js",
-      "_index-BkBVfMLv.js"
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-UtuHTcwU.js",
+      "_index-Bp16S-yQ.js"
     ],
     "css": [
-      "assets/TaxDeclarationForm-9Y5XUQNl.css"
+      "assets/TaxDeclarationForm-BhiwbQwj.css"
     ]
   },
   "resources/js/pages/tax-declarations/TaxDeclarationIndex.vue": {
-    "file": "assets/TaxDeclarationIndex-gqhA9bNp.js",
+    "file": "assets/TaxDeclarationIndex-NzohiX08.js",
     "name": "TaxDeclarationIndex",
     "src": "resources/js/pages/tax-declarations/TaxDeclarationIndex.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-CszfffkW.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-Cf33FfK3.js",
-      "_index-mpmaqens.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js",
-      "_index-B04KV4IB.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CMrP1gjW.js",
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-ClgCejD9.js",
+      "_index-CyPBle1Q.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js",
+      "_index-CpE3K1ix.js"
     ]
   },
   "resources/js/pages/tax-declarations/TaxDeclarationPdf.vue": {
-    "file": "assets/TaxDeclarationPdf-DKXRZe7C.js",
+    "file": "assets/TaxDeclarationPdf-nkXhuI3f.js",
     "name": "TaxDeclarationPdf",
     "src": "resources/js/pages/tax-declarations/TaxDeclarationPdf.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js"
+      "_useToast-B8eRrN5i.js"
     ]
   },
   "resources/js/pages/tax-declarations/TaxDeclarationView.vue": {
-    "file": "assets/TaxDeclarationView-5G_DY_Px.js",
+    "file": "assets/TaxDeclarationView-BvNwtmZs.js",
     "name": "TaxDeclarationView",
     "src": "resources/js/pages/tax-declarations/TaxDeclarationView.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-mpmaqens.js",
-      "_index-otGy2ViN.js",
-      "_index-DY_B4JQV.js",
-      "_index-CszfffkW.js",
-      "_index-BpQ5etDE.js",
-      "_index-m4E8a2lC.js",
-      "_index-DG7ViP5A.js",
-      "_index-DFm-DrSW.js",
-      "_TaxDeclarationSheet-CHiMRt9U.js",
-      "_MiniPropertyMap-Dk2_4iPK.js",
-      "_index-Cf33FfK3.js",
-      "_index-CkPjWPJZ.js",
-      "_index-BkBVfMLv.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-CyPBle1Q.js",
+      "_index-D9x8wnye.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CMrP1gjW.js",
+      "_index-4sA3joNd.js",
+      "_index-VcvqV7Lz.js",
+      "_TaxDeclarationSheet-W8AYsn15.js",
+      "_MiniPropertyMap-CvZqjhn3.js",
+      "_index-ClgCejD9.js"
     ]
   },
   "resources/js/pages/users/RolesPage.vue": {
-    "file": "assets/RolesPage-CvRA1hSm.js",
+    "file": "assets/RolesPage-Cy-amJB8.js",
     "name": "RolesPage",
     "src": "resources/js/pages/users/RolesPage.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-B04KV4IB.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-Cf33FfK3.js",
-      "_index-CszfffkW.js",
-      "_index-mpmaqens.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-CpE3K1ix.js",
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-ClgCejD9.js",
+      "_index-CMrP1gjW.js",
+      "_index-CyPBle1Q.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js"
     ]
   },
   "resources/js/pages/users/UsersIndex.vue": {
-    "file": "assets/UsersIndex-BvR8WL-Y.js",
+    "file": "assets/UsersIndex-aABlQyap.js",
     "name": "UsersIndex",
     "src": "resources/js/pages/users/UsersIndex.vue",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.js",
-      "_useToast-BfGw_FbG.js",
-      "_index-DY_B4JQV.js",
-      "_index-BrhUKu-j.js",
-      "_index-CszfffkW.js",
-      "_index-BjOe7OKA.js",
-      "_index-otGy2ViN.js",
-      "_index-B04KV4IB.js",
-      "_index-mpmaqens.js",
-      "_index-Cf33FfK3.js",
-      "_index-BvwqYF5k.js",
-      "_index-BkBVfMLv.js"
+      "_useToast-B8eRrN5i.js",
+      "_index-Cz4Vahw8.js",
+      "_index-B506gJ3v.js",
+      "_index-CMrP1gjW.js",
+      "_index-DYkdnFWb.js",
+      "_index-D9x8wnye.js",
+      "_index-CpE3K1ix.js",
+      "_index-CyPBle1Q.js",
+      "_index-ClgCejD9.js",
+      "_index-AMplXUgq.js",
+      "_index-Bp16S-yQ.js"
     ]
   }
 }

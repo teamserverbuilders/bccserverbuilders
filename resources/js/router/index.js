@@ -42,6 +42,7 @@ const routes = [
             { path: 'field-appraisals/create', name: 'fa-create', component: () => import('@/pages/field-appraisals/FieldAppraisalForm.vue') },
             { path: 'field-appraisals/:id/pdf', name: 'fa-pdf', component: () => import('@/pages/field-appraisals/FieldAppraisalPdf.vue') },
             { path: 'field-appraisals/:id/edit', name: 'fa-edit', component: () => import('@/pages/field-appraisals/FieldAppraisalForm.vue') },
+            { path: 'field-appraisals/:id/transaction', name: 'fa-transaction', component: () => import('@/pages/field-appraisals/FieldAppraisalTransaction.vue') },
             { path: 'field-appraisals/:id', name: 'fa-show', component: () => import('@/pages/field-appraisals/FieldAppraisalView.vue') },
 
             // Property Owners

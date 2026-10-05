@@ -25,17 +25,6 @@
                     @click="generatePdf"
                 />
                 <Button
-                    type="button"
-                    label="Transfer Ownership"
-                    icon="pi pi-users"
-                    outlined
-                    size="small"
-                    severity="help"
-                    :disabled="isArchivedTd || (td.is_locked && String(td.status || '').toLowerCase() !== 'approved')"
-                    v-tooltip="transferTooltip"
-                    @click="openTransferDialog"
-                />
-                <Button
                     v-if="td.is_locked"
                     type="button"
                     label="Unlock"
@@ -125,14 +114,6 @@
                         <h3 class="font-semibold text-gray-800 dark:text-white flex items-center gap-2">
                             <i class="pi pi-users text-emerald-500"></i> Ownership History
                         </h3>
-                        <Button
-                            v-if="!isArchivedTd && (!td.is_locked || String(td.status || '').toLowerCase() === 'approved')"
-                            label="Transfer"
-                            icon="pi pi-arrow-right-arrow-left"
-                            size="small"
-                            text
-                            @click="openTransferDialog"
-                        />
                     </div>
 
                     <!-- Current owner -->
@@ -203,7 +184,7 @@
                     <div v-else class="text-center py-6 text-gray-400">
                         <i class="pi pi-history text-2xl mb-2 block opacity-40"></i>
                         <p class="text-sm">No previous owners recorded yet</p>
-                        <p class="text-xs mt-1">Use Transfer Ownership when the property changes hands.</p>
+                        <p class="text-xs mt-1">Ownership changes are recorded from Transaction on the field appraisal.</p>
                     </div>
                 </div>
 
@@ -374,161 +355,6 @@
             </div>
         </Dialog>
 
-        <!-- Transfer Ownership Dialog (landscape) -->
-        <Dialog
-            v-model:visible="showTransferDialog"
-            header="Transfer Ownership — Issue New TD"
-            :modal="true"
-            class="w-[96vw] max-w-6xl"
-            :contentStyle="{ padding: '0' }"
-            @hide="resetTransferForm"
-        >
-            <div class="flex flex-col">
-                <!-- Top banner: what will happen -->
-                <div class="border-b border-blue-200 dark:border-blue-800 bg-blue-50/60 dark:bg-blue-900/20 px-5 py-3 text-xs text-blue-800 dark:text-blue-200">
-                    <p class="flex items-start gap-2">
-                        <i class="pi pi-info-circle mt-0.5"></i>
-                        <span>
-                            A <strong>new Tax Declaration</strong> will be issued for the new owner. The current TD
-                            <strong class="font-mono">{{ td.td_number }}</strong> will be <strong>cancelled (archived)</strong>
-                            and referenced as the previous TD on the new record.
-                        </span>
-                    </p>
-                </div>
-
-                <!-- Cancels → Issues summary strip -->
-                <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-stretch gap-0 border-b border-gray-100 dark:border-gray-700">
-                    <div class="p-4 bg-gray-50 dark:bg-gray-700/40">
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Cancels TD</p>
-                        <p class="font-mono text-sm font-semibold text-gray-800 dark:text-white break-all">{{ td.td_number }}</p>
-                        <p class="text-xs text-gray-500 mt-1 truncate">{{ currentOwnerName }}</p>
-                    </div>
-                    <div class="hidden md:flex items-center justify-center px-3 text-gray-400">
-                        <i class="pi pi-arrow-right text-lg"></i>
-                    </div>
-                    <div class="p-4 bg-emerald-50/60 dark:bg-emerald-900/20 border-l border-emerald-200 dark:border-emerald-800">
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 mb-1">Issues new TD</p>
-                        <p class="font-mono text-sm font-semibold text-emerald-800 dark:text-emerald-200 break-all">
-                            {{ transferForm.new_td_number || '—' }}
-                        </p>
-                        <p class="text-xs text-gray-500 mt-1 truncate">{{ transferForm.owner_name || 'New owner' }}</p>
-                    </div>
-                </div>
-
-                <!-- Landscape two-column body -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100 dark:divide-gray-700">
-                    <!-- LEFT: New TD identifiers + transfer meta -->
-                    <div class="p-5 space-y-4">
-                        <div>
-                            <p class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1.5">
-                                <i class="pi pi-file"></i> New Declaration
-                            </p>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="form-label">New TD No. <span class="text-red-500">*</span></label>
-                                    <InputText
-                                        v-model="transferForm.new_td_number"
-                                        class="w-full"
-                                        placeholder="e.g. 2026-05-0001"
-                                    />
-                                    <p class="text-[11px] text-gray-400 mt-1">Must be unique.</p>
-                                </div>
-                                <div>
-                                    <label class="form-label">New ARP No.</label>
-                                    <InputText
-                                        v-model="transferForm.new_arp_number"
-                                        class="w-full"
-                                        :placeholder="td.arp_number || 'Leave blank to reuse'"
-                                    />
-                                    <p class="text-[11px] text-gray-400 mt-1">Optional — reuses current if empty.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="border-t border-gray-100 dark:border-gray-700 pt-4">
-                            <p class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1.5">
-                                <i class="pi pi-calendar"></i> Transfer Details
-                            </p>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="form-label">Transfer date <span class="text-red-500">*</span></label>
-                                    <DatePicker v-model="transferForm.transfer_date" class="w-full" dateFormat="yy-mm-dd" showIcon />
-                                </div>
-                                <div>
-                                    <label class="form-label">Reason</label>
-                                    <InputText v-model="transferForm.transfer_reason" class="w-full" placeholder="Sale, inheritance, donation…" />
-                                </div>
-                                <div class="col-span-2">
-                                    <label class="form-label">Remarks</label>
-                                    <Textarea v-model="transferForm.remarks" class="w-full" rows="3" autoResize />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- RIGHT: New owner -->
-                    <div class="p-5 space-y-4 bg-gray-50/40 dark:bg-gray-900/20">
-                        <div class="flex items-center justify-between">
-                            <p class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
-                                <i class="pi pi-user-plus"></i> New Owner
-                            </p>
-                            <div v-if="transferForm.owner_id" class="flex items-center gap-2">
-                                <Tag :value="`Linked #${transferForm.owner_id}`" severity="info" class="text-[10px]" />
-                                <Button label="Clear" size="small" text @click="clearTransferOwnerSelection" />
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="form-label">Search existing owner</label>
-                            <AutoComplete
-                                v-model="transferOwnerSearch"
-                                :suggestions="transferOwnerSuggestions"
-                                optionLabel="owner_name"
-                                placeholder="Type name to search…"
-                                class="w-full"
-                                :forceSelection="false"
-                                @complete="searchTransferOwners"
-                                @item-select="onTransferOwnerSelect"
-                            />
-                            <p class="text-[11px] text-gray-400 mt-1">Or enter a new owner below to create one.</p>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="col-span-2">
-                                <label class="form-label">Owner name <span class="text-red-500">*</span></label>
-                                <InputText v-model="transferForm.owner_name" class="w-full" :disabled="!!transferForm.owner_id" />
-                            </div>
-                            <div>
-                                <label class="form-label">TIN</label>
-                                <InputText v-model="transferForm.owner_tin" class="w-full" :disabled="!!transferForm.owner_id" />
-                            </div>
-                            <div>
-                                <label class="form-label">Telephone</label>
-                                <InputText v-model="transferForm.owner_telephone" class="w-full" :disabled="!!transferForm.owner_id" />
-                            </div>
-                            <div class="col-span-2">
-                                <label class="form-label">Address</label>
-                                <Textarea v-model="transferForm.owner_address" class="w-full" rows="2" autoResize :disabled="!!transferForm.owner_id" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Footer actions -->
-                <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2 px-5 py-3 border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
-                    <Button label="Cancel" outlined size="small" @click="showTransferDialog = false" />
-                    <Button
-                        label="Issue New TD & Transfer"
-                        icon="pi pi-check"
-                        size="small"
-                        severity="success"
-                        :loading="transferLoading"
-                        @click="submitTransfer"
-                    />
-                </div>
-            </div>
-        </Dialog>
-
         <!-- Image Upload -->
         <Dialog v-model:visible="showImgUpload" header="Add Property Photo" :modal="true" class="w-full max-w-md" @hide="resetImgForm">
             <div class="space-y-4 pt-2">
@@ -589,11 +415,8 @@ import Menu from 'primevue/menu';
 import Tag from 'primevue/tag';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
-import InputNumber from 'primevue/inputnumber';
 import Select from 'primevue/select';
 import Textarea from 'primevue/textarea';
-import AutoComplete from 'primevue/autocomplete';
-import DatePicker from 'primevue/datepicker';
 import ProgressSpinner from 'primevue/progressspinner';
 import TaxDeclarationSheet from '@/components/TaxDeclarationSheet.vue';
 import MiniPropertyMap from '@/components/MiniPropertyMap.vue';
@@ -620,23 +443,7 @@ const imgFileInput = ref(null);
 const imgUploadLoading = ref(false);
 const imgForm = ref({ image_type: 'additional', caption: '', file: null });
 const workflowMenuRef = ref(null);
-const showTransferDialog = ref(false);
-const transferLoading = ref(false);
 const unlockLoading = ref(false);
-const transferOwnerSearch = ref('');
-const transferOwnerSuggestions = ref([]);
-const transferForm = ref({
-    new_td_number: '',
-    new_arp_number: '',
-    owner_id: null,
-    owner_name: '',
-    owner_tin: '',
-    owner_address: '',
-    owner_telephone: '',
-    transfer_date: new Date(),
-    transfer_reason: '',
-    remarks: '',
-});
 
 const imageTypeOptions = [
     { label: 'Front', value: 'front' },
@@ -676,8 +483,6 @@ const currentOwnerName = computed(() =>
     td.value?.owner?.owner_name || td.value?.owner_name || 'No owner assigned'
 );
 
-const isArchivedTd = computed(() => String(td.value?.status || '').toLowerCase() === 'archived');
-
 // Latest history row that produced a successor TD (present when this TD was cancelled by transfer)
 const successorTd = computed(() => {
     const row = ownershipHistory.value.find(h => h?.new_tax_declaration_id || h?.new_td_number);
@@ -695,13 +500,6 @@ const successorTd = computed(() => {
 const issuedFrom = computed(() =>
     td.value?.issued_from_history ?? td.value?.issuedFromHistory ?? null
 );
-
-const transferTooltip = computed(() => {
-    if (isArchivedTd.value) return 'This TD is already cancelled. Open the successor to record further transfers.';
-    const locked = td.value?.is_locked && String(td.value?.status || '').toLowerCase() !== 'approved';
-    if (locked) return 'Unlock or return this record before transferring';
-    return 'Issue a new TD and cancel this one under the new owner';
-});
 
 const kindOfPropertyLabel = computed(() => {
     const k = td.value?.kind_of_property;
@@ -797,133 +595,6 @@ function openWorkflow(status, label, icon) {
     workflowAction.value = { status, label, icon };
     workflowRemarks.value = '';
     showWorkflowDialog.value = true;
-}
-
-function formatTransferDate(value) {
-    if (!value) return null;
-    if (value instanceof Date) {
-        const y = value.getFullYear();
-        const m = String(value.getMonth() + 1).padStart(2, '0');
-        const d = String(value.getDate()).padStart(2, '0');
-        return `${y}-${m}-${d}`;
-    }
-    return String(value).slice(0, 10);
-}
-
-function openTransferDialog() {
-    const status = String(td.value?.status || '').toLowerCase();
-    if (td.value?.is_locked && status !== 'approved') {
-        toast.error('Locked', 'This record is locked. Return or unlock it before transferring ownership.');
-        return;
-    }
-    if (status === 'archived') {
-        toast.error('Already cancelled', 'This TD is already archived. Open the successor TD to record further transfers.');
-        return;
-    }
-    resetTransferForm();
-    showTransferDialog.value = true;
-}
-
-function resetTransferForm() {
-    transferOwnerSearch.value = '';
-    transferOwnerSuggestions.value = [];
-    transferForm.value = {
-        new_td_number: '',
-        new_arp_number: '',
-        owner_id: null,
-        owner_name: '',
-        owner_tin: '',
-        owner_address: '',
-        owner_telephone: '',
-        transfer_date: new Date(),
-        transfer_reason: '',
-        remarks: '',
-    };
-}
-
-async function searchTransferOwners(event) {
-    try {
-        const { data } = await axios.get('property-owners', { params: { search: event.query } });
-        transferOwnerSuggestions.value = data.data || [];
-    } catch {
-        transferOwnerSuggestions.value = [];
-    }
-}
-
-function onTransferOwnerSelect(event) {
-    const owner = event.value;
-    if (!owner?.id) return;
-    transferForm.value.owner_id = owner.id;
-    transferForm.value.owner_name = owner.owner_name || '';
-    transferForm.value.owner_tin = owner.tin || '';
-    transferForm.value.owner_address = owner.address || '';
-    transferForm.value.owner_telephone = owner.contact_number || '';
-    transferOwnerSearch.value = owner.owner_name || '';
-}
-
-function clearTransferOwnerSelection() {
-    transferForm.value.owner_id = null;
-    transferOwnerSearch.value = '';
-}
-
-async function submitTransfer() {
-    if (!transferForm.value.new_td_number?.trim()) {
-        toast.error('Missing TD number', 'Enter the new TD number that will be issued.');
-        return;
-    }
-    if (transferForm.value.new_td_number.trim() === (td.value?.td_number || '').trim()) {
-        toast.error('Same TD number', 'New TD number must be different from the current TD.');
-        return;
-    }
-    if (!transferForm.value.owner_id) {
-        const typedName = typeof transferOwnerSearch.value === 'string'
-            ? transferOwnerSearch.value.trim()
-            : (transferOwnerSearch.value?.owner_name || '');
-        if (!transferForm.value.owner_name?.trim() && typedName) {
-            transferForm.value.owner_name = typedName;
-        }
-    }
-    if (!transferForm.value.owner_id && !transferForm.value.owner_name?.trim()) {
-        toast.error('Missing owner', 'Select an existing owner or enter a new owner name.');
-        return;
-    }
-    if (!transferForm.value.transfer_date) {
-        toast.error('Missing date', 'Transfer date is required.');
-        return;
-    }
-    if (transferForm.value.owner_id && Number(transferForm.value.owner_id) === Number(td.value?.owner_id)) {
-        toast.error('Same owner', 'Choose a different owner than the current one.');
-        return;
-    }
-
-    transferLoading.value = true;
-    try {
-        const payload = {
-            new_td_number: transferForm.value.new_td_number.trim(),
-            new_arp_number: transferForm.value.new_arp_number?.trim() || undefined,
-            owner_id: transferForm.value.owner_id || undefined,
-            owner_name: transferForm.value.owner_name?.trim() || undefined,
-            owner_tin: transferForm.value.owner_tin || undefined,
-            owner_address: transferForm.value.owner_address || undefined,
-            owner_telephone: transferForm.value.owner_telephone || undefined,
-            transfer_date: formatTransferDate(transferForm.value.transfer_date),
-            transfer_reason: transferForm.value.transfer_reason || undefined,
-            remarks: transferForm.value.remarks || undefined,
-        };
-        const { data } = await axios.post(`tax-declarations/${td.value.id}/transfer-ownership`, payload);
-        toast.success('Transferred', `New TD ${payload.new_td_number} issued. Old TD cancelled.`);
-        showTransferDialog.value = false;
-        const newId = data?.new_tax_declaration_id || data?.new_tax_declaration?.id;
-        if (newId) {
-            router.push(`/tax-declarations/${newId}`);
-        } else {
-            await loadTd(true);
-        }
-    } catch (err) {
-        toast.apiError(err, 'Ownership transfer failed');
-    } finally {
-        transferLoading.value = false;
-    }
 }
 
 async function submitWorkflow() {
