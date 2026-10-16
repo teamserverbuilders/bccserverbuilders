@@ -163,10 +163,6 @@ class TaxDeclarationController extends Controller
                     $newOwner = PropertyOwner::findOrFail($newOwnerId);
                 }
 
-                if ((int) $newOwnerId === (int) $taxDeclaration->owner_id) {
-                    throw new \InvalidArgumentException('New owner must be different from the current owner.');
-                }
-
                 $transferDate = $request->date('transfer_date');
                 $transactionCode = trim((string) $request->transaction_code);
                 $issuedCode = $transactionCode;

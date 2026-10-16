@@ -308,10 +308,6 @@ async function submitTransfer() {
         toast.error('Missing date', 'Transfer date is required.');
         return;
     }
-    if (transferForm.value.owner_id && Number(transferForm.value.owner_id) === Number(td.value?.owner_id)) {
-        toast.error('Same owner', 'Choose a different owner than the current one.');
-        return;
-    }
 
     transferLoading.value = true;
     try {
