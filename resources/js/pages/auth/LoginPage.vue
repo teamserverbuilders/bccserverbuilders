@@ -24,6 +24,7 @@
         <div class="login-body">
             <section class="brand-panel" aria-label="System identity">
                 <div class="brand-inner">
+                    <img :src="logoSrc" alt="Seal of the Municipality of Baao" class="brand-seal" />
                     <p class="brand-place">Province of Camarines Sur</p>
                     <p class="brand-place brand-place-strong">Municipality of Baao</p>
                     <p class="brand-kicker">Office of the Municipal Assessor</p>
@@ -33,29 +34,6 @@
                     <p class="brand-statement">
                         The official record of real property tax declarations, field appraisals, and assessments for the Municipality of Baao.
                     </p>
-                    <ul class="duty-list">
-                        <li>
-                            <span>01</span>
-                            <div>
-                                <strong>Tax declarations</strong>
-                                <small>Property records on file</small>
-                            </div>
-                        </li>
-                        <li>
-                            <span>02</span>
-                            <div>
-                                <strong>Field appraisal</strong>
-                                <small>Assessment of real property</small>
-                            </div>
-                        </li>
-                        <li>
-                            <span>03</span>
-                            <div>
-                                <strong>Official archive</strong>
-                                <small>Permanent office record</small>
-                            </div>
-                        </li>
-                    </ul>
                 </div>
             </section>
 
@@ -350,14 +328,25 @@ async function handleLogin() {
 .brand-inner {
     position: relative;
     z-index: 1;
+    box-sizing: border-box;
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
-    text-align: left;
-    padding: 36px 56px 36px 64px;
-    border-left: 3px solid #c5a059;
-    margin: 28px 28px 28px 0;
+    text-align: center;
+    padding: 48px 56px;
+}
+
+.brand-seal {
+    width: 92px;
+    height: 92px;
+    margin-bottom: 16px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #fff;
+    box-shadow: 0 0 0 2px #c5a059, 0 0 0 5px rgba(14, 35, 64, 0.35);
 }
 
 .brand-place {
@@ -393,7 +382,7 @@ async function handleLogin() {
 .brand-rule {
     width: 72px;
     height: 2px;
-    margin: 16px 0 14px;
+    margin: 16px auto 14px;
     background: #c5a059;
 }
 
@@ -411,44 +400,6 @@ async function handleLogin() {
     font-size: 14px;
     line-height: 1.55;
     color: rgba(255, 255, 255, 0.72);
-}
-
-.duty-list {
-    list-style: none;
-    margin: 26px 0 0;
-    padding: 0;
-    width: min(100%, 420px);
-    border-top: 1px solid rgba(197, 160, 89, 0.35);
-}
-
-.duty-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.duty-list span {
-    font-family: Georgia, "Times New Roman", Times, serif;
-    font-size: 13px;
-    color: #e6c36a;
-    width: 24px;
-    padding-top: 2px;
-}
-
-.duty-list strong {
-    display: block;
-    font-size: 14px;
-    font-weight: 700;
-    color: #fff;
-}
-
-.duty-list small {
-    display: block;
-    margin-top: 1px;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
 }
 
 .access-panel {
@@ -472,15 +423,15 @@ async function handleLogin() {
 .access-watermark {
     position: absolute;
     z-index: 0;
-    width: 300px;
-    height: 300px;
-    right: 6%;
-    bottom: 8%;
-    left: auto;
-    top: auto;
+    width: min(78%, 620px);
+    height: auto;
+    aspect-ratio: 1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     border-radius: 50%;
     object-fit: cover;
-    opacity: 0.2;
+    opacity: 0.22;
     pointer-events: none;
     filter: sepia(0.2);
 }
@@ -721,6 +672,8 @@ async function handleLogin() {
 @media (min-width: 900px) {
     .brand-panel {
         display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
 
@@ -760,11 +713,8 @@ async function handleLogin() {
     }
 
     .access-watermark {
-        width: 160px;
-        height: 160px;
-        opacity: 0.12;
-        right: -24px;
-        bottom: -24px;
+        width: min(78%, 280px);
+        opacity: 0.16;
     }
 
     .card-head h2 {
