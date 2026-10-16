@@ -7,7 +7,7 @@
                     <h1 class="text-xl font-bold text-gray-900 dark:text-white truncate">
                         {{ title }}
                     </h1>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Field Appraisal (FAAS) PDF preview</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Choose the sections to include, then generate the PDF.</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
@@ -20,13 +20,36 @@
                     @click="downloadPdf"
                 />
                 <Button
-                    label="Refresh"
-                    icon="pi pi-refresh"
+                    label="Generate"
+                    icon="pi pi-file-pdf"
                     size="small"
-                    severity="secondary"
                     :loading="loading"
                     @click="loadPdf"
                 />
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <p class="text-sm font-semibold text-[#1a3557] dark:text-slate-100">Sections to include</p>
+                <div class="flex items-center gap-2">
+                    <button type="button" class="text-xs font-medium text-[#1a3557] dark:text-blue-300 hover:underline" @click="setAll(true)">Select all</button>
+                    <button type="button" class="text-xs font-medium text-slate-500 hover:underline" @click="setAll(false)">Clear</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div v-for="group in sectionGroups" :key="group.label">
+                    <label class="flex items-center gap-2 mb-2 cursor-pointer">
+                        <input type="checkbox" class="accent-[#1a3557]" :checked="groupChecked(group)" @change="setGroup(group, $event.target.checked)" />
+                        <span class="text-xs font-bold uppercase tracking-wide text-slate-500">{{ group.label }}</span>
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pl-1">
+                        <label v-for="item in group.items" :key="item.id" class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
+                            <input v-model="picked[item.id]" type="checkbox" class="mt-0.5 accent-[#1a3557]" />
+                            <span>{{ item.label }}</span>
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -53,7 +76,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
+import { ref, reactive, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useToast } from '@/composables/useToast';
 import Button from 'primevue/button';
@@ -70,6 +93,49 @@ const appraisalNo = ref('');
 
 const title = computed(() => appraisalNo.value ? `FAAS ${appraisalNo.value}` : 'Field Appraisal PDF');
 const filename = computed(() => `FAAS-${appraisalNo.value || route.params.id}.pdf`);
+
+const sectionGroups = [
+    {
+        label: 'Front page',
+        items: [
+            { id: 'header', label: 'Header and update code' },
+            { id: 'identity', label: 'ARP, PIN, owner, administrator' },
+            { id: 'location', label: 'Property location' },
+            { id: 'boundaries', label: 'Boundaries and land sketch' },
+            { id: 'land', label: 'Land appraisal' },
+            { id: 'plants', label: 'Plants and trees appraisal' },
+        ],
+    },
+    {
+        label: 'Back page',
+        items: [
+            { id: 'adjustments', label: 'Value adjustment factors' },
+            { id: 'assessment', label: 'Property assessment' },
+            { id: 'taxability', label: 'Previous owner and taxability' },
+            { id: 'signatures', label: 'Conforme and approval' },
+            { id: 'memoranda', label: 'Memoranda' },
+            { id: 'references', label: 'Reference and posting summary' },
+        ],
+    },
+];
+
+const picked = reactive(
+    Object.fromEntries(sectionGroups.flatMap((group) => group.items.map((item) => [item.id, true]))),
+);
+
+const selectedSections = computed(() => Object.keys(picked).filter((id) => picked[id]));
+
+function setAll(on) {
+    Object.keys(picked).forEach((id) => { picked[id] = on; });
+}
+
+function setGroup(group, on) {
+    group.items.forEach((item) => { picked[item.id] = on; });
+}
+
+function groupChecked(group) {
+    return group.items.every((item) => picked[item.id]);
+}
 
 function revokeUrl() {
     if (pdfUrl.value) {
@@ -94,13 +160,20 @@ function downloadPdf() {
 }
 
 async function loadPdf() {
+    if (!selectedSections.value.length) {
+        toast.error('No section selected', 'Choose at least one portion of the FAAS to include.');
+        return;
+    }
     loading.value = true;
     error.value = '';
     revokeUrl();
     try {
         const [metaRes, pdfRes] = await Promise.all([
             axios.get(`field-appraisals/${route.params.id}`).catch(() => null),
-            axios.get(`field-appraisals/${route.params.id}/pdf`, { responseType: 'blob' }),
+            axios.get(`field-appraisals/${route.params.id}/pdf`, {
+                responseType: 'blob',
+                params: { sections: selectedSections.value },
+            }),
         ]);
         if (metaRes?.data?.appraisal_no) appraisalNo.value = metaRes.data.appraisal_no;
         const blob = new Blob([pdfRes.data], { type: 'application/pdf' });

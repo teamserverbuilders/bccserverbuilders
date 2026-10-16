@@ -47,6 +47,11 @@
                         <span v-else class="text-xs text-slate-400">—</span>
                     </template>
                 </Column>
+                <Column field="cad_pls_lot_no" header="Lot No." sortable style="min-width:110px">
+                    <template #body="{ data }">
+                        <span class="text-xs text-slate-700 dark:text-slate-300">{{ data.cad_pls_lot_no || data.tax_declaration?.lot_number || '—' }}</span>
+                    </template>
+                </Column>
                 <Column header="Inspection Date" style="min-width:120px">
                     <template #body="{ data }">
                         <span class="text-xs">{{ data.inspection_date ? new Date(data.inspection_date).toLocaleDateString() : '—' }}</span>

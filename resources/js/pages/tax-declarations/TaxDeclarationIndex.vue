@@ -70,6 +70,11 @@
                         <span class="text-sm text-gray-700 dark:text-gray-300">{{ data.barangay?.name }}</span>
                     </template>
                 </Column>
+                <Column field="lot_number" header="Lot No." sortable style="min-width: 110px">
+                    <template #body="{ data }">
+                        <span class="text-sm text-gray-700 dark:text-gray-300">{{ data.lot_number || '—' }}</span>
+                    </template>
+                </Column>
                 <Column field="assessed_value" header="Assessed Value" sortable style="min-width: 140px">
                     <template #body="{ data }">
                         <span class="text-sm font-medium">₱{{ data.assessed_value ? Number(data.assessed_value).toLocaleString() : '—' }}</span>

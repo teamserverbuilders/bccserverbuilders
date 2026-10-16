@@ -26,6 +26,15 @@
     $taxRaw = strtolower(trim((string) ($fa->taxability ?? '')));
     $isTaxable = in_array($taxRaw, ['taxable', 't'], true);
     $isExempt  = in_array($taxRaw, ['exempt', 'e'], true);
+
+    $allowedSections = ['header', 'identity', 'location', 'boundaries', 'land', 'plants', 'adjustments', 'assessment', 'taxability', 'signatures', 'memoranda', 'references'];
+    $picked = isset($sections) && is_array($sections) ? array_values(array_intersect($allowedSections, $sections)) : $allowedSections;
+    if ($picked === []) {
+        $picked = $allowedSections;
+    }
+    $show = fn ($key) => in_array($key, $picked, true);
+    $frontOn = $show('header') || $show('identity') || $show('location') || $show('boundaries') || $show('land') || $show('plants');
+    $backOn = $show('adjustments') || $show('assessment') || $show('taxability') || $show('signatures') || $show('memoranda') || $show('references');
 ?>
 <!DOCTYPE html>
 <html>
@@ -112,6 +121,7 @@
 <body>
 
 {{-- ===================== PAGE 1 — FRONT ===================== --}}
+@if($show('header'))
 <table class="hdr">
     <tr>
         <td class="seal">
@@ -129,8 +139,10 @@
         </td>
     </tr>
 </table>
+@endif
 
 {{-- Identity box --}}
+@if($show('identity'))
 <div class="box">
     <table>
         <tr>
@@ -156,8 +168,10 @@
         </tr>
     </table>
 </div>
+@endif
 
 {{-- Property Location --}}
+@if($show('location'))
 <div class="loc-box">
     <div class="sec-title">PROPERTY LOCATION</div>
     <table>
@@ -171,8 +185,10 @@
         </tr>
     </table>
 </div>
+@endif
 
 {{-- Boundaries + Land Sketch --}}
+@if($show('boundaries'))
 <table class="sketch-wrap">
     <tr>
         <td class="bound-cell">
@@ -193,8 +209,10 @@
         </td>
     </tr>
 </table>
+@endif
 
 {{-- Land Appraisal --}}
+@if($show('land'))
 <div class="tbl-title">LAND APPRAISAL</div>
 <table class="tbl">
     <thead>
@@ -227,8 +245,10 @@
         </tr>
     </tbody>
 </table>
+@endif
 
 {{-- Plants and Trees --}}
+@if($show('plants'))
 <div class="tbl-title">PLANTS AND TREES APPRAISAL</div>
 <table class="tbl">
     <thead>
@@ -271,13 +291,18 @@
         </tr>
     </tbody>
 </table>
+@endif
 
 {{-- ===================== PAGE 2 — BACK ===================== --}}
+@if($frontOn && $backOn)
 <div class="page-break"></div>
+@endif
 
+@if($show('adjustments') || $show('assessment'))
 <table class="two-col">
     <tr>
-        <td class="left">
+        @if($show('adjustments'))
+        <td class="{{ $show('assessment') ? 'left' : '' }}" @if(!$show('assessment')) style="width:100%;" @endif>
             <div class="adj-box">
                 <div class="sec-title">VALUE ADJUSTMENT FACTORS for AGRICULTURAL LANDS</div>
                 <table class="adj-inner" style="width:100%;">
@@ -309,7 +334,9 @@
                 </table>
             </div>
         </td>
-        <td class="right">
+        @endif
+        @if($show('assessment'))
+        <td class="{{ $show('adjustments') ? 'right' : '' }}" @if(!$show('adjustments')) style="width:100%;" @endif>
             <div class="assess-box">
                 <div class="sec-title">PROPERTY ASSESSMENT</div>
                 <table class="tbl" style="margin-top:0; border:0;">
@@ -341,9 +368,12 @@
                 </table>
             </div>
         </td>
+        @endif
     </tr>
 </table>
+@endif
 
+@if($show('taxability'))
 <table class="info-row" style="width:100%; border-collapse:collapse;">
     <tr>
         <td style="width:55%"><span class="lbl">Previous Owner:</span> {{ $fa->previous_owner ?: '' }}</td>
@@ -361,7 +391,9 @@
         </td>
     </tr>
 </table>
+@endif
 
+@if($show('signatures'))
 <table class="sig-grid">
     <tr>
         <td>
@@ -396,12 +428,16 @@
         </td>
     </tr>
 </table>
+@endif
 
+@if($show('memoranda'))
 <div class="memo">
     <div class="lbl">MEMORANDA:</div>
     <div style="margin-top:4px; line-height:1.35;">{!! nl2br(e($fa->memoranda ?: '')) !!}</div>
 </div>
+@endif
 
+@if($show('references'))
 <div class="ref-title">REFERENCE &amp; POSTING SUMMARY</div>
 <table class="ref-tbl" style="width:100%; border-collapse:collapse;">
     <thead>
@@ -442,6 +478,7 @@
         </tr>
     </tbody>
 </table>
+@endif
 
 </body>
 </html>

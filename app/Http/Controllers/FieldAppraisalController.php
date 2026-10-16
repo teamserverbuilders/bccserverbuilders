@@ -196,7 +196,7 @@ class FieldAppraisalController extends Controller
 
     public function index(Request $request)
     {
-        $query = FieldAppraisal::with(['taxDeclaration:id,td_number', 'assessor:id,name'])
+        $query = FieldAppraisal::with(['taxDeclaration:id,td_number,lot_number', 'assessor:id,name'])
             ->when($request->status, fn($q) => $q->where('status', $request->status))
             ->when($request->search, fn($q, $s) => $q->where('appraisal_no', 'like', "%{$s}%"))
             ->latest();
@@ -356,8 +356,18 @@ class FieldAppraisalController extends Controller
         );
     }
 
-    public function generatePdf(FieldAppraisal $fieldAppraisal)
+    public function generatePdf(Request $request, FieldAppraisal $fieldAppraisal)
     {
+        $allowed = ['header', 'identity', 'location', 'boundaries', 'land', 'plants', 'adjustments', 'assessment', 'taxability', 'signatures', 'memoranda', 'references'];
+        $requested = $request->input('sections', $allowed);
+        if (is_string($requested)) {
+            $requested = array_filter(array_map('trim', explode(',', $requested)));
+        }
+        $sections = array_values(array_intersect($allowed, array_map('strval', (array) $requested)));
+        if ($sections === []) {
+            return response()->json(['message' => 'Select at least one section to include in the PDF.'], 422);
+        }
+
         $fa = $fieldAppraisal->load(['taxDeclaration', 'assessor', 'landRows', 'plantRows', 'assessmentRows']);
 
         $sealPath = null;
@@ -365,12 +375,12 @@ class FieldAppraisalController extends Controller
         if (is_file($fallback)) $sealPath = $fallback;
 
         $sketchPath = null;
-        if (!empty($fa->land_sketch)) {
+        if (!empty($fa->land_sketch) && in_array('boundaries', $sections, true)) {
             $path = Storage::disk('public')->path($fa->land_sketch);
             if (is_file($path)) $sketchPath = $path;
         }
 
-        $pdf = Pdf::loadView('pdfs.field-appraisal', compact('fa', 'sealPath', 'sketchPath'))
+        $pdf = Pdf::loadView('pdfs.field-appraisal', compact('fa', 'sealPath', 'sketchPath', 'sections'))
             ->setPaper('letter', 'portrait');
 
         $name = $fa->appraisal_no ?: $fa->id;
